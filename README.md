@@ -42,7 +42,7 @@ Go to [my website]() for more details about otorecon and my bug bounty methodolo
 ## Installation
 
 ```bash
-$ git clone 
+$ git clone https://github.com/Mr0Wido/otorecon.git
 $ cd otorecon
 $ python3 setup.py install
 $ otorecon -h
