@@ -48,10 +48,10 @@ $ python3 setup.py install
 $ otorecon -h
 ```
 
-## [Manuel Installation](https://github.com/Mr0Wido/otorecon.wiki.git)
+## [Manuel Installation](https://github.com/Mr0Wido/otorecon/wiki/Manuel-Installation)
 Click the title and go manual installation wiki page.
 
-## [Usage](main_tools/md_files/Usage.md)
+## [Usage](https://github.com/Mr0Wido/otorecon/wiki/Usage)
 Click the title and learn how to use __otorecon__.
 
 ## Otorecon Workflow
