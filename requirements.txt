@@ -1,0 +1,13 @@
+requests
+argparse
+json
+os
+sys
+colorama
+urllib
+asyncio
+subprocess
+beautifulsoup4
+dnspython
+Click
+tldextract
