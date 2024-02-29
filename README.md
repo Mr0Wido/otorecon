@@ -37,7 +37,7 @@ Otorecon is a Python-based tool for __Bug Bounty__. It provides a variety of sca
 - Basic Information Scan
 <br>
 
-Go to [my website]() for more details about otorecon and my bug bounty methodology.
+Go to [my website](https://mr0wido.github.io/bug-bounty-methodology-oto/) for more details about otorecon and my bug bounty methodology.
 
 ## Installation
 
