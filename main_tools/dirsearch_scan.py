@@ -1,5 +1,6 @@
 from main_tools.common_libs import *
 from main_tools.html_output import html_output
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 def parser_arguments():
     parser = argparse.ArgumentParser(description='Directory Search')
@@ -13,41 +14,26 @@ def write_to_file(filename, data):
         file.write('\n'.join(data))
     
 
-def dirsearch_scan():
-    args = parser_arguments()
-    dirsearch_list = args.dirsearch_list
-    dirsearch_domain = args.domain_name
-    dirsearch_temp = set()
-    dirsearch_temp_out = set()
-    dirsearch_result = set()
-    output_kind = 'dirsearch_scan'
-    
-
-    if dirsearch_list:
-        directories_output_file = dirsearch_list.replace('.txt', '_dirs.txt')
+def create_directory_from_url(dirsearch_list, domain_name):
+    if dirsearch_list and '/' in dirsearch_list:
+        apart = dirsearch_list.split('/')
+        directory_name = apart[0]
+        if not os.path.exists(directory_name):
+            os.mkdir(directory_name)
+        return directory_name
+    elif dirsearch_list and not '/' in dirsearch_list:
         apart = dirsearch_list.split('_')
-        output_filenmae = apart[0]
-        scan_info = 'Directory Bruteforce: '
-    elif dirsearch_domain:
-        directories_output_file = f'{dirsearch_domain}_dirs.txt'
-        output_filenmae = f'{dirsearch_domain}'
-        scan_info = 'Directory Bruteforce: '
+        directory_name = apart[0]
+        if not os.path.exists(directory_name):
+            os.mkdir(directory_name)
+    elif domain_name:
+        if not os.path.exists(domain_name):
+            os.mkdir(domain_name)
+        return domain_name
     else:
-        print(colorama.Fore.RED + 'The following arguments are required: --dl/--dirsearch_list')
-        print(colorama.Fore.RED + 'The following arguments are required: --d/--domain_name')
-        sys.exit(1)
-    
+        return None
 
-    with open(directories_output_file, 'w') as f:
-        pass
-
-    for tool in dirsearch_tools:
-        if dirsearch_list:
-            print(colorama.Fore.CYAN + f"Running {tool} on {dirsearch_list}")
-        elif dirsearch_domain:
-            print(colorama.Fore.CYAN + f"Running {tool} on {dirsearch_domain}")
-        if tool not in args.dirsearch_scan and 'all' not in args.dirsearch_scan:
-            continue
+def run_gobuster(tool, dirsearch_list, dirsearch_domain, dirsearch_temp, dirsearch_temp_out):
         try:
             with open (f'{tool}_temp.txt', 'w') as f:
                 pass
@@ -96,16 +82,60 @@ def dirsearch_scan():
             
         except subprocess.CalledProcessError as e:
             print(colorama.Fore.RED + f"{tool} returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")
-            continue
+            return
 
-        dirsearch_result.update(dirsearch_temp)        
-        with open(directories_output_file, 'w') as f:
-            f.write('\n'.join(dirsearch_result))
+def dirsearch_scan():
+    args = parser_arguments()
+    dirsearch_list = args.dirsearch_list
+    dirsearch_domain = args.domain_name
+    dirsearch_temp = set()
+    dirsearch_temp_out = set()
+    dirsearch_result = set()
+    output_kind = 'dirsearch_scan'
+    directory = create_directory_from_url(dirsearch_list, dirsearch_domain)    
+
+    if dirsearch_list:
+        directories_output_file = dirsearch_list.replace('.txt', '_dirs.txt')
+        apart = dirsearch_list.split('_')
+        output_filenmae = apart[0]
+        scan_info = 'Directory Bruteforce: '
+    elif dirsearch_domain:
+        directories_output_file = os.path.join(directory, f'{dirsearch_domain}_dirs.txt')
+        output_filenmae = f'{dirsearch_domain}'
+        scan_info = 'Directory Bruteforce: '
+    else:
+        print(colorama.Fore.RED + 'The following arguments are required: --dl/--dirsearch_list')
+        print(colorama.Fore.RED + 'The following arguments are required: --d/--domain_name')
+        sys.exit(1)
     
+
+    with open(directories_output_file, 'w') as f:
+        pass
+
+    if dirsearch_list:
+        print(colorama.Fore.CYAN + f"Running tools on " + green + f"{dirsearch_list}" )
+    elif dirsearch_domain:
+        print(colorama.Fore.CYAN + f"Running tools on " + green + f"{dirsearch_domain}" )
+        
+    max_threads = min(10, len(dirsearch_list))
+    with ThreadPoolExecutor(max_workers=max_threads) as executor:
+        futures = []
         for tool in dirsearch_tools:
-            file_to_remove = f'{tool}.txt'
-            if os.path.exists(file_to_remove):
-                os.remove(file_to_remove)
+            if tool not in args.dirsearch_scan and 'all' not in args.dirsearch_scan:
+                continue
+            futures.append(executor.submit(run_gobuster, tool, dirsearch_list, dirsearch_domain, dirsearch_temp, dirsearch_temp_out))
+
+        for future in as_completed(futures):
+            future.result()
+
+    dirsearch_result.update(dirsearch_temp)        
+    with open(directories_output_file, 'w') as f:
+        f.write('\n'.join(dirsearch_result))
+
+    for tool in dirsearch_tools:
+        file_to_remove = f'{tool}.txt'
+        if os.path.exists(file_to_remove):
+            os.remove(file_to_remove)
 
     print(colorama.Fore.GREEN + f"Directory Search completed. Successfully printed to the " + blue + f"{directories_output_file}" + green + " has been created")
     html_output(output_filenmae, directories_output_file, scan_info, output_kind)

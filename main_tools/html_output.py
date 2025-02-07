@@ -2,9 +2,11 @@ from main_tools.common_libs import *
 
 
 def html_output(output_filename, data_file, info, output_kinds):
-    
-    if not os.path.exists(f'{output_filename}.html'):
-        with open (f'{output_filename}.html', 'w') as html_file:
+    current_dir = os.getcwd()
+    html_file_path = os.path.join(current_dir, f'{output_filename}.html')
+
+    if not os.path.exists(html_file_path):
+        with open (html_file_path, 'w') as html_file:
             html_file.write(
 '''
 <!DOCTYPE html>
@@ -58,8 +60,8 @@ def html_output(output_filename, data_file, info, output_kinds):
                 html_file.write('</div></div>')
 
     
-    elif os.path.exists(f'{output_filename}.html'):
-        with open (f'{output_filename}.html', 'a') as html_file:
+    elif os.path.exists(html_file_path):
+        with open (html_file_path, 'a') as html_file:
             if output_kinds == 'subdomains_scan':
                 with open (data_file, 'r') as file:
                     html_file.write('<div class="title"><h2 style="text-align: left; margin-left: 30px;">' + info + ' ' +  output_filename + '</h2>')

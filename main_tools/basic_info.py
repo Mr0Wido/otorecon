@@ -11,6 +11,12 @@ def parser_arguments():
     parser.add_argument('-d', '--domain_name', help='Domain name to scan', action='store', default=None, required=True)
     return parser.parse_args()
 
+def create_directory_url(domain_name):
+    directory_name = domain_name
+    if not os.path.exists(directory_name):
+        os.mkdir(directory_name)
+    return directory_name
+
 def basic_info_scan():
     args = parser_arguments()
     domain_name = args.domain_name
@@ -18,7 +24,8 @@ def basic_info_scan():
     domain_temp = 'domain_temp.txt'
     scan_kind = 'basic_info_scan'
     scan_info = 'Basic Information Scan'
-    output_file = f'{domain_name}_info.txt' 
+    directory = create_directory_url(domain_name)
+    output_file = os.path.join(directory, f'{domain_name}_info.txt') 
 
 
     if basic_scan and domain_name is None:
@@ -52,7 +59,7 @@ def basic_info_scan():
                         file.write(f"{line}\n")
 
             elif tool == 'whatweb':
-                output = subprocess.check_output(['whatweb', '-v', '--colour=NEVER', '-q', '--no-errors', domain_name]).decode()
+                output = subprocess.check_output(['whatweb', '-v', '--colour=NEVER', '-q', '--no-errors', f"https://{domain_name}"]).decode()
                 whatweb = set(output.splitlines())
 
                 with open(output_file, 'a') as file:

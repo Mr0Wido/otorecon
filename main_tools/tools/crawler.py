@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 import requests
-from bs4 import BeautifulSoup
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning, MarkupResemblesLocatorWarning
+requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
 from urllib.parse import urlparse, urljoin
 from concurrent.futures import ThreadPoolExecutor
 import argparse
 import os
+import sys
 
+
+sys.stderr = open(os.devnull, 'w')
 class DiscoveryWebCrawler:
     def __init__(self, domain, output_file):
         self.domain = domain

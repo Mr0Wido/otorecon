@@ -4,6 +4,7 @@ import logging
 import colorama
 from colorama import Fore, Style
 from urllib.parse import urlparse, parse_qs, urlencode
+import urllib.parse as urlib
 
 yellow_color_code = "\033[93m"
 reset_color_code = "\033[0m"
@@ -29,10 +30,17 @@ def has_extension(url, extensions):
 def clean_url(url):
     parsed_url = urlparse(url)
     
-    if (parsed_url.port == 80 and parsed_url.scheme == "http") or (parsed_url.port == 443 and parsed_url.scheme == "https"):
-        parsed_url = parsed_url._replace(netloc=parsed_url.netloc.rsplit(":", 1)[0])
+    try:
+        port = int(parsed_url.port)
+    except (ValueError, TypeError):
+        port = None
 
-    return parsed_url.geturl()
+    if (port == 80 and parsed_url.scheme == "http") or (port == 443 and parsed_url.scheme == "https"):
+        cleaned_url = f"{parsed_url.scheme}://{parsed_url.hostname}{parsed_url.path}"
+    else:
+        cleaned_url = url
+
+    return cleaned_url
 
 def clean_urls(urls, extensions, placeholder):
     cleaned_urls = set()

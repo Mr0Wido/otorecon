@@ -12,15 +12,16 @@ def get_screenshot():
     scan_info = 'Get Screenshot '
     output_kind = 'get_screenshot'
     apart = get_screenshot.split('_')
-    output_filenmae = apart[0]
-    output_file = f'{output_filenmae}_screenshots'
-    screenshots_names = f'{output_filenmae}_screenshots.txt'
+    output_filename = apart[0]
+    output_file = f'{output_filename}_screenshots'
+    screenshots_names = f'{output_filename}_screenshots.txt'
     with open(screenshots_names, 'w') as f:
         pass
 
     try:
-        command = f'gowitness file -f {get_screenshot} --disable-db -P {output_file}'
-        command_output = subprocess.check_output(command, shell=True).decode()
+        print(colorama.Fore.CYAN + f'Getting screenshot for {get_screenshot}')
+        command = f'gowitness scan file -f {get_screenshot} --threads 50 --screenshot-path {output_file} -q'
+        command_output = subprocess.check_output(command, shell=True, stderr=subprocess.DEVNULL).decode()
 
         with open(screenshots_names, 'w') as file:
             for file_name in os.listdir(output_file):
@@ -30,27 +31,8 @@ def get_screenshot():
     except subprocess.CalledProcessError as e:
         print(colorama.Fore.RED + f'Error: {e}')
 
-
-
     print(colorama.Fore.GREEN + f'Output file: {output_file}')
-    html_output(output_filenmae, screenshots_names, scan_info, output_kind)
+    html_output(output_file, screenshots_names, scan_info, output_kind)
+
 if __name__ == '__main__':
     get_screenshot()
-
-# aaaa
-# if get_screenshot:
-#     try:
-#         with open(get_screenshot , 'r+') as file:
-#             lines = file.readlines()
-#             file.seek(0)
-
-#             for line in lines:
-#                 if 'https' or 'http' not in line:
-#                     file.write(f'https://{line}')
-#                 else:
-#                     file.write(line)
-
-#             file.truncate()
-
-#     except FileNotFoundError:
-#         print(colorama.Fore.RED + f'File {get_screenshot} not found')
