@@ -27,7 +27,7 @@ class CustomInstall(install):
             return
 
         # Genel paketleri kur
-        self.run_command(f"{package_manager} golang whatweb python3-pip wfuzz gobuster")
+        self.run_command(f"{package_manager} golang whatweb python3-pip wfuzz gobuster masscan nmap")
 
         # pip düzeltme
         self.run_command("python3 -m pip config set global.break-system-packages true")
@@ -85,6 +85,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "requests",
+        "tqdm",
         "argparse",
         "colorama",
         "tldextract",

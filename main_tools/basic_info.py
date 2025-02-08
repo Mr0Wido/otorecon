@@ -44,13 +44,14 @@ def basic_info_scan():
             continue            
         try:
             if tool == 'dnmasscan':
-                dnmasscan = f'python3 main_tools/tools/dnmasscan.py {domain_file} {domain_temp}'
+                dnmasscan = f'sudo python3 main_tools/tools/dnmasscan.py {domain_file} {domain_temp}'
                 sub_out = subprocess.Popen(dnmasscan, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 stdout, stderr = sub_out.communicate()
 
                 sed_command = "sed -n '/^#/!s/^.*Ports:/Ports:/p' masscan.log"
                 sed_out = subprocess.Popen(sed_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 output1, stderr = sed_out.communicate()
+                subprocess.run(['rm', 'masscan.log'], check=True)
 
                 dnmasscan = set(output1.splitlines())
                 with open(output_file, 'w') as file:
