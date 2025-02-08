@@ -27,7 +27,9 @@ class CustomInstall(install):
             return
 
         # Genel paketleri kur
-        self.run_command(f"{package_manager} golang whatweb python3-pip wfuzz gobuster masscan nmap")
+        self.run_command(f"{package_manager} unzip curl git golang whatweb python3-pip wfuzz gobuster masscan nmap")
+        self.run_command("python3 -m pip install --upgrade pip setuptools wheel")
+        
 
         # pip düzeltme
         self.run_command("python3 -m pip config set global.break-system-packages true")
@@ -37,6 +39,7 @@ class CustomInstall(install):
         self.run_command("rm -rf Sublist3r")  
         self.run_command("git clone https://github.com/laramies/theHarvester.git && cd theHarvester && pip install -r requirements/base.txt")
         self.run_command("sudo mv theHarvester/ /opt/theHarvester && sudo chmod +x /opt/theHarvester/theHarvester.py && sudo ln -sf /opt/theHarvester/theHarvester.py /usr/bin/theHarvester")
+        self.run_command("rm -rf theHarvester")
         self.run_command("git clone https://github.com/blechschmidt/massdns.git && cd massdns && make && sudo make install")
         self.run_command("rm -rf massdns")
 
