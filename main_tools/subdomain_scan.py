@@ -61,7 +61,7 @@ def run_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_out, out_o
         
         #TheHarvester
         elif tool =="theharvester":
-            command = f'theHarvester -d {domain_name} -b anubis,crtsh,dnsdumpster,rapiddns,otx,urlscan,yahoo -f theHarvester_out'
+            command = f'theHarvester -d {domain_name} -b anubis,crtsh,rapiddns,otx,urlscan,yahoo -f theHarvester_out'
             output = subprocess.check_output(command, shell=True, stderr=subprocess.DEVNULL).decode()
             with open(f'theHarvester_out.json', 'r') as f:
                 data = f.read()

@@ -51,13 +51,14 @@ def basic_info_scan():
                 sed_command = "sed -n '/^#/!s/^.*Ports:/Ports:/p' masscan.log"
                 sed_out = subprocess.Popen(sed_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 output1, stderr = sed_out.communicate()
-                subprocess.run(['rm', 'masscan.log'], check=True)
 
                 dnmasscan = set(output1.splitlines())
                 with open(output_file, 'w') as file:
                     file.write(f"Ports:\n")
                     for line in dnmasscan:
                         file.write(f"{line}\n")
+                        
+                subprocess.run(['rm', 'masscan.log'], check=True)
 
             elif tool == 'whatweb':
                 output = subprocess.check_output(['whatweb', '-v', '--colour=NEVER', '-q', '--no-errors', f"https://{domain_name}"]).decode()
@@ -70,7 +71,6 @@ def basic_info_scan():
         except Exception as e:
             print(e)
     subprocess.run(['rm', domain_temp], check=True)
-    subprocess.run(['rm', 'masscan.log'], check=True)
     print(f'{colorama.Fore.GREEN}Basic Information Scan Completed and Results saved in ' + blue + f'{output_file}' + green +  ' file.')
 
     html_output(domain_name, output_file, scan_info, scan_kind)
