@@ -78,7 +78,7 @@ def run_gobuster(tool, dirsearch_list, dirsearch_domain, dirsearch_temp, dirsear
             
             dirsearch_temp.update(dirsearch_temp_out)
             write_to_file(f'{tool}.txt', dirsearch_temp_out)
-            subprocess.run(['rm', f'{tool}_temp.txt'], check=True)
+            subprocess.run(['rm', '-f', f'{tool}_temp.txt'], check=True)
             
         except subprocess.CalledProcessError as e:
             print(colorama.Fore.RED + f"{tool} returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")

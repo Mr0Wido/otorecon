@@ -116,7 +116,7 @@ def run_tool(tool, crawler_list, crawler_domain, perform_crawler_scan,   urls_ou
                 getJS_out = subprocess.Popen(getJS_command, shell=True, stdout=f, stderr=subprocess.DEVNULL, text=True)
                 output, error = getJS_out.communicate()
             print (blue + f"{tool}" + green + " completed successfully.")
-            subprocess.run(['rm', getJS_temp_file], check=True)
+            subprocess.run(['rm', '-f', getJS_temp_file], check=True)
 
         elif tool == 'katana':
             if crawler_list:
@@ -143,7 +143,7 @@ def run_tool(tool, crawler_list, crawler_domain, perform_crawler_scan,   urls_ou
                 cariddi_out = subprocess.Popen(cariddi_command, shell=True, stdout=f, stderr=subprocess.DEVNULL, text=True)
                 output, error = cariddi_out.communicate()
             print (blue + f"{tool}" + green + " completed successfully.")
-            subprocess.run(['rm', cariddi_temp_file], check=True)
+            subprocess.run(['rm', '-f', cariddi_temp_file], check=True)
         
         elif tool == 'hakrawler':
             with open(hakrawler_temp_file, 'w') as f:
@@ -160,7 +160,7 @@ def run_tool(tool, crawler_list, crawler_domain, perform_crawler_scan,   urls_ou
                 hakrawler_out = subprocess.Popen(hakrawler_command, shell=True, stdout=f, stderr=subprocess.DEVNULL, text=True)
                 output, error = hakrawler_out.communicate()
             print (blue + f"{tool}" + green + " completed successfully.")
-            subprocess.run(['rm', hakrawler_temp_file], check=True)
+            subprocess.run(['rm', '-f', hakrawler_temp_file], check=True)
 
         elif tool == 'golinkfinder': 
             with open(golinkfinder_temp_file, 'w') as f:
@@ -176,7 +176,7 @@ def run_tool(tool, crawler_list, crawler_domain, perform_crawler_scan,   urls_ou
                 golinkfinder_out = subprocess.Popen(golinkfinder_command, shell=True, stdout=f, stderr=subprocess.DEVNULL, text=True)
                 output, error = golinkfinder_out.communicate()
             print (blue + f"{tool}" + green + " completed successfully.")
-            subprocess.run(['rm', golinkfinder_temp_file], check=True)
+            subprocess.run(['rm', '-f', golinkfinder_temp_file], check=True)
             
     except subprocess.CalledProcessError as e:
         print(colorama.Fore.RED + f"{tool} returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")
@@ -291,7 +291,7 @@ def crawler_scan():
             future.result()
 
     for part_file in part_files:
-        subprocess.run(['rm', part_file], check=True)
+        subprocess.run(['rm', '-f', part_file], check=True)
 
     print(green + f"Parsed URLs Successfully printed to the " + blue + f'{urls_output_file}' + green + " and " + blue + f'{urls_output_file_js}' + green + " file.")
 

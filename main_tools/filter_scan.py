@@ -135,7 +135,7 @@ def filter_subs_scan():
         
         html_output(output_filename, filtered_file, scan_info, output_kind)
 
-        subprocess.run(['rm', filter_temp_file], check=True)
+        subprocess.run(['rm', '-f', filter_temp_file], check=True)
         print(colorama.Fore.GREEN + f"Filtred: " + blue + directory, f"{result_lines}" + green + " domains are saved in " + blue + f"{filtered_file}")
 
     elif not args.clear_protocol_status_code:
@@ -147,7 +147,7 @@ def filter_subs_scan():
         
         html_output(output_filename, filtered_file, scan_info, output_kind)
         
-        subprocess.run(['rm', filter_temp_file], check=True)
+        subprocess.run(['rm', '-f', filter_temp_file], check=True)
         print(colorama.Fore.GREEN + f"Filtred: " + blue + directory, f"{result_lines}" + green + " domains are saved in " + blue + f"{filtered_file}")
         
 if __name__ == "__main__":

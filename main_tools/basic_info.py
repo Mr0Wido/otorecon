@@ -57,8 +57,8 @@ def basic_info_scan():
                     file.write(f"Ports:\n")
                     for line in dnmasscan:
                         file.write(f"{line}\n")
-                        
-                subprocess.run(['rm', 'masscan.log'], check=True)
+
+                subprocess.run(['rm', '-f', 'masscan.log'], check=True)
 
             elif tool == 'whatweb':
                 output = subprocess.check_output(['whatweb', '-v', '--colour=NEVER', '-q', '--no-errors', f"https://{domain_name}"]).decode()
@@ -70,7 +70,7 @@ def basic_info_scan():
                         file.write(f"{line}\n")
         except Exception as e:
             print(e)
-    subprocess.run(['rm', domain_temp], check=True)
+    subprocess.run(['rm', '-f', domain_temp], check=True)
     print(f'{colorama.Fore.GREEN}Basic Information Scan Completed and Results saved in ' + blue + f'{output_file}' + green +  ' file.')
 
     html_output(domain_name, output_file, scan_info, scan_kind)

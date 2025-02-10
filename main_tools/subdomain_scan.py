@@ -56,7 +56,7 @@ def run_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_out, out_o
             with open(sublist3r_temp_file, 'r') as f:
                 sublist3r = set(f.read().splitlines())
             temp_subdomains.update(sublist3r)
-            subprocess.run(['rm', sublist3r_temp_file], check=True)
+            subprocess.run(['rm', '-f', sublist3r_temp_file], check=True)
             print(green + f"{tool} found " + blue + str(len(sublist3r)) + green + " subdomains.")
         
         #TheHarvester
@@ -74,8 +74,8 @@ def run_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_out, out_o
                         for item in value:
                             f.write(f"{item}\n")
             temp_subdomains.update(theharvester)
-            subprocess.run(['rm', 'theHarvester_out.json'], check=True)
-            subprocess.run(['rm', 'theHarvester_out.xml'], check=True)
+            subprocess.run(['rm', '-f', 'theHarvester_out.json'], check=True)
+            subprocess.run(['rm', '-f', 'theHarvester_out.xml'], check=True)
             print(green + f"{tool} found " + blue + str(len(theharvester)) + green + " subdomains.")
         #Crt.sh
         elif tool =="crtsh":
@@ -121,7 +121,7 @@ def run_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_out, out_o
 
             dnsgen = set(output.splitlines())
             temp_subdomains.update(dnsgen)
-            subprocess.run(['rm', f'{dnsgen_temp_file}'], check=True)
+            subprocess.run(['rm', '-f', f'{dnsgen_temp_file}'], check=True)
             print(green + f"{tool} found " + blue + str(len(dnsgen)) + green + " subdomains.")
         
         #Altdns
@@ -136,7 +136,7 @@ def run_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_out, out_o
                 altdns = set(f.read().splitlines())
 
             temp_subdomains.update(altdns)
-            subprocess.run(['rm', altdns_temp_file], check=True)
+            subprocess.run(['rm', '-f', altdns_temp_file], check=True)
             print(green + f"{tool} found " + blue + str(len(altdns)) + green + " subdomains.")
 
     except subprocess.CalledProcessError as e:
