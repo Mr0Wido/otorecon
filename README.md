@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://github.com/Mr0Wido/otorecon"><img src="https://i.hizliresim.com/s1vb4eu.png" alt="otorecon"/></a>
+  <a href="https://github.com/Mr0Wido/otorecon"><img src="https://i.hizliresim.com/tonyziv.jpeg" alt="otorecon"/></a>
   <br>
   OTORECON
 </h1>
@@ -55,4 +55,4 @@ Click the title and go manual installation wiki page.
 Click the title and learn how to use __otorecon__.
 
 ## Otorecon Workflow
-![otorecon_workflow](https://i.hizliresim.com/lsc6sux.jpg)
+![otorecon_workflow](https://i.hizliresim.com/lkyym9o.jpg)
