@@ -131,14 +131,16 @@ def run_tool(tool, crawler_list, crawler_domain, perform_crawler_scan,   urls_ou
         elif tool == 'cariddi':
             with open(cariddi_temp_file, 'w') as f:
                 pass
-            sed_command= f"sed 's#^#https://#' {crawler_list} | sort -u"
-            with open(cariddi_temp_file, 'a') as f:
-                sed_out = subprocess.Popen(sed_command, shell=True, stdout=f, stderr=subprocess.DEVNULL, text=True)
-                sed_output, error = sed_out.communicate()
+
             if crawler_list:
+                sed_command = ["sed", "s#^#https://#", crawler_list]
+                with open(cariddi_temp_file, 'a') as f:
+                    subprocess.run(sed_command, stdout=f, stderr=subprocess.DEVNULL, text=True, shell=True)
                 cariddi_command = f'cat {cariddi_temp_file} | cariddi -plain'   
+
             elif crawler_domain:
                 cariddi_command = f'echo {crawler_domain} | cariddi -plain | sort -u'
+                
             with open(urls_output_temp_file, 'a') as f:   
                 cariddi_out = subprocess.Popen(cariddi_command, shell=True, stdout=f, stderr=subprocess.DEVNULL, text=True)
                 output, error = cariddi_out.communicate()

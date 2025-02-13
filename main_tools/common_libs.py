@@ -23,11 +23,12 @@ whatweb_temp_file = 'whatweb_temp.txt'
 # Subdomain_scan variables
 amass_temp_file         = 'amass_temp.txt'
 sublist3r_temp_file     = 'sublist3r_temp.txt'
-shuffledns_temp_file    = 'massdns_output.txt'
+shuffledns_temp_file    = 'shuffledns_temp.txt'
 dnsgen_temp_file        = 'dnsgen_temp.txt'
 remaine_temp_file       = 'remaine.txt'
 domain_file             = 'domain.txt'
 altdns_temp_file        = 'altdns_temp.txt'
+altdns_resolved_file    = 'altdns_resolved.txt'
 
 # Crawler_scan variables
 getJS_temp_file         = 'getJS_temp.txt'

@@ -1,0 +1,7 @@
+
+# todo
+
+jekyll çalışmıyor çalıştırabildiğim durumlarda da sıkıntı çıkarıor
+toola gerekli eklemeleri yap
+Biraz attack tooları konusunda araştırma ve veri toplamaya devam et
+Vaktin çok kalırsa roadmap sh daki ilk gününü tamamla

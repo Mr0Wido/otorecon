@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 warnings.filterwarnings("ignore", category=SyntaxWarning)
 def parser_arguments():
     parser = argparse.ArgumentParser(description='subdomain discovery tools')
-    parser.add_argument('-subs', '--subdomain_scan',help = 'Specify subdomain tools to run or use "all"',nargs = '*', choices = ['sublist3r', 'subfinder', 'assetfinder',  'findomain', 'crtsh','theharvester', 'shuffledns', 'puredns', 'dnsgen', 'altdns', 'all'], default=None)
+    parser.add_argument('-subs', '--subdomain_scan',help = 'Specify subdomain tools to run or use "all"',nargs = '*', choices = ['sublist3r', 'subfinder', 'assetfinder',  'findomain', 'crtsh','theharvester', 'shuffledns', 'dnsgen', 'altdns', 'all'], default=None)
     parser.add_argument('-d', '--domain_name', help='Domain name to scan', action='store', default=None, required=False)
     parser.add_argument('-os', '--out_of_scope', help='Out-of-scope domains file path', default=None, required=False)
     return parser.parse_args()
@@ -52,7 +52,8 @@ def run_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_out, out_o
         elif tool == "sublist3r":
             with open(sublist3r_temp_file, 'w') as f:
                 pass
-            output = subprocess.check_output([tool, '-d', domain_name, '-n', '-o', sublist3r_temp_file], stderr=subprocess.DEVNULL).decode()
+            command = f'sublist3r -d {domain_name} -n -o {sublist3r_temp_file}'
+            output = subprocess.check_output(command, shell=True, stderr=subprocess.DEVNULL).decode()
             with open(sublist3r_temp_file, 'r') as f:
                 sublist3r = set(f.read().splitlines())
             temp_subdomains.update(sublist3r)
@@ -87,25 +88,17 @@ def run_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_out, out_o
             temp_subdomains.update(crtsh)
             print(green + f"{tool} found " + blue + str(len(crtsh)) + green + " subdomains.")
             
-        #Subbrute and Massdns
+        #shuffledns
         elif tool == "shuffledns":
-            shuffledns_command = f'shuffledns -d {domain_name} -w main_tools/wordlists/subdomain_wordlists/names.txt -r main_tools/wordlists/subdomain_wordlists/resolvers.txt -nc -silent -t 2500'
-            sub_out = subprocess.Popen(shuffledns_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-            output, error = sub_out.communicate()
-
-            shuffledns = set(output.splitlines())
-            temp_subdomains.update(shuffledns)
-            print(green + f"{tool} found " + blue + str(len(shuffledns)) + green + " subdomains.")
-
-        #Puredns
-        elif tool == "puredns":
-            puredns_command = f'puredns bruteforce main_tools/wordlists/subdomain_wordlists/all.txt {domain_name} --resolvers main_tools/wordlists/subdomain_wordlists/resolvers.txt -q -l 2500'
+            puredns_command = f'shuffledns -d {domain_name} -w main_tools/wordlists/subdomain_wordlists/all.txt -r main_tools/wordlists/subdomain_wordlists/resolvers.txt -t 5000 -sw -retries 1 -mode bruteforce -silent -o {shuffledns_temp_file}'
             puredns_out = subprocess.Popen(puredns_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
             output, error = puredns_out.communicate()
 
-            puredns = set(output.splitlines())
-            temp_subdomains.update(puredns)
-            print(green + f"{tool} found " + blue + str(len(puredns)) + green + " subdomains.")
+            with open(shuffledns_temp_file, 'r') as f:
+                shuffledns = set(f.read().splitlines())
+            temp_subdomains.update(shuffledns)
+            subprocess.run(['rm', '-f', f'{shuffledns_temp_file}'], check=True)
+            print(green + f"{tool} found " + blue + str(len(shuffledns)) + green + " subdomains.")
 
         #dnsgen
         elif tool == "dnsgen": 
@@ -128,15 +121,19 @@ def run_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_out, out_o
         elif tool == "altdns":
             with open(altdns_temp_file, 'w') as f:
                 pass
-            altdns_command = f'altdns -i {domain_file} -o {altdns_temp_file} -w main_tools/wordlists/subdomain_wordlists/words.txt'
+            altdns_command = f'altdns -i {domain_file} -o {altdns_temp_file} -w main_tools/wordlists/subdomain_wordlists/words.txt -r -s {altdns_resolved_file}'
             altdns_out = subprocess.Popen(altdns_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
             stdout, stderr = altdns_out.communicate()
 
-            with open(altdns_temp_file, 'r') as f:
-                altdns = set(f.read().splitlines())
+            sed_command = f"sed 's/:.*//' {altdns_resolved_file} | sort -u"
+            sed_out = subprocess.Popen(sed_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+            output, error = sed_out.communicate()
 
+            altdns = set(output.splitlines())
             temp_subdomains.update(altdns)
             subprocess.run(['rm', '-f', altdns_temp_file], check=True)
+            subprocess.run(['rm', '-f', altdns_resolved_file], check=True)
+
             print(green + f"{tool} found " + blue + str(len(altdns)) + green + " subdomains.")
 
     except subprocess.CalledProcessError as e:
@@ -146,7 +143,7 @@ def run_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_out, out_o
 
 def subdomain_scan():
     #Tools
-    subdomain_tools = ['subfinder', 'assetfinder', 'findomain', 'sublist3r', 'theharvester', 'crtsh', 'shuffledns', 'puredns', 'dnsgen', 'altdns']
+    subdomain_tools = ['subfinder', 'assetfinder', 'findomain', 'sublist3r', 'theharvester', 'crtsh', 'shuffledns', 'dnsgen', 'altdns']
 
     #Variables
     args = parser_arguments()
