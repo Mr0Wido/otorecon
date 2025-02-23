@@ -18,11 +18,11 @@ from main_tools.get_screenshot import get_screenshot
 
 def parser_arguments():
     parser = argparse.ArgumentParser(description='subdomain discovery tools')
-    parser.add_argument('-bs', '--basic_scan', help='Basic Information Scan; Specify tools to run or use "all" to run all tools', nargs = '*', choices = ['dnmasscan', 'whatweb', 'all'], default=None)
-    parser.add_argument('-subs', '--subdomain_scan',help = 'Specify subdomain tools to run or use "all"',nargs = '*', choices = ['sublist3r', 'subfinder', 'assetfinder',  'findomain', 'crtsh','theharvester', 'puredns', 'dnsgen', 'altdns', 'all'], default=None)
+    parser.add_argument('-bs', '--basic_scan', help='Basic Information Scan; Specify tools to run or use "all" to run all tools', nargs = '*', choices = ['dnmasscan', 'whatweb', 'google_dork', 'github_dork', 'whois' ,'all'], default=None)
+    parser.add_argument('-subs', '--subdomain_scan',help = 'Specify subdomain tools to run or use "all"',nargs = '*', choices = ['subfinder', 'assetfinder',  'findomain', 'crtsh','theharvester', 'cero', 'scilla', 'dnsx', 'shuffledns', 'dnsgen', 'altdns', 'gau' ,'all'], default=None)
     parser.add_argument('-d', '--domain_name', help='Domain name to scan', action='store', default=None, required=False)
     parser.add_argument('-os', '--out_of_scope', help='Out-of-scope domains file path', default=None, required=False)
-    parser.add_argument('-cs', '--crawler_scan', help='Pulling URLs from crawler tools', nargs='*', choices = ['crawler' , 'waymac', 'waybackurl', 'archive','gau', 'getJS', 'katana', 'cariddi', 'hakrawler', 'golinkfinder', 'all'], default=None)
+    parser.add_argument('-cs', '--crawler_scan', help='Pulling URLs from crawler tools', nargs='*', choices = ['crawler' , 'waymac', 'waybackurl','gau', 'katana', 'getjs', 'hakrawler', 'golinkfinder', 'all'], default=None)
     parser.add_argument('-cl', '--crawler_list', help='Crawler list for the crawler scan', default=None, required=False)
     parser.add_argument('-cp', '--crawler_param', help='Crawler result parameter', action='store_true', required=False)
     parser.add_argument('-ds', '--dirsearch_scan', help='Directory Search', nargs='*', choices = ['rd1000', 'raft', 'dirm2_3', 'dirsearch', 'all'], default=None)

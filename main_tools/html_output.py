@@ -98,5 +98,5 @@ def html_output(output_filename, data_file, info, output_kinds):
                 html_file.write('</div></div>')
 
             html_file.write('<br><br></body></html>')      
-    print(colorama.Fore.LIGHTYELLOW_EX + f"{info} results saved in " + blue + f"{output_filename}.html"  + yellow + " file successfully!")
+    print(colorama.Fore.LIGHTYELLOW_EX + f" [*] {info} results saved in " + blue + f"{output_filename}.html"  + yellow + " file successfully!")
 

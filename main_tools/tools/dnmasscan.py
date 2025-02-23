@@ -11,7 +11,7 @@ def main():
         print("  dns_output_file:  path to the file to store the DNS lookups in")
         print("  masscan_options:  standard masscan options to use (excluding address range).")
         print("                    If not specified, will run masscan using the defaults of: ")
-        print("                    -p1-65535 -oG masscan.log --rate=500")
+        print("                    -p1-65535 -oG masscan.log --rate=4000")
         print()
         sys.exit()
 
@@ -41,9 +41,9 @@ def main():
 
         print("[*] Launching masscan...")
         if len(sys.argv) == 3:
-            print("[*] Using default options: -p1-65535 -oG masscan.log --rate=500")
+            print("[*] Using default options: -p1-65535 -oG masscan.log --rate=4000")
             print("------------------------")
-            subprocess.run(f"masscan -p1-65535 -oG masscan.log --rate=500 {' '.join(ip_adresses)}", shell=True)
+            subprocess.run(f"masscan -p1-65535 -oG masscan.log --rate=4000 {' '.join(ip_adresses)}", shell=True)
         else:
             print("------------------------")
             subprocess.run(["masscan"] + sys.argv[3:] + ip_adresses)

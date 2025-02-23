@@ -113,9 +113,9 @@ def dirsearch_scan():
         pass
 
     if dirsearch_list:
-        print(colorama.Fore.CYAN + f"Running tools on " + green + f"{dirsearch_list}" )
+        print(colorama.Fore.CYAN + f" [*] Running tools on " + green + f"{dirsearch_list}" )
     elif dirsearch_domain:
-        print(colorama.Fore.CYAN + f"Running tools on " + green + f"{dirsearch_domain}" )
+        print(colorama.Fore.CYAN + f" [*] Running tools on " + green + f"{dirsearch_domain}" )
         
     max_threads = min(10, len(dirsearch_list))
     with ThreadPoolExecutor(max_workers=max_threads) as executor:
@@ -137,7 +137,7 @@ def dirsearch_scan():
         if os.path.exists(file_to_remove):
             os.remove(file_to_remove)
 
-    print(colorama.Fore.GREEN + f"Directory Search completed. Successfully printed to the " + blue + f"{directories_output_file}" + green + " has been created")
+    print(colorama.Fore.GREEN + f" [*] Directory Search completed. Successfully printed to the " + blue + f"{directories_output_file}" + green + " has been created")
     html_output(output_filenmae, directories_output_file, scan_info, output_kind)
 if __name__ == "__main__":
     dirsearch_scan()

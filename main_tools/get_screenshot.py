@@ -19,7 +19,7 @@ def get_screenshot():
         pass
 
     try:
-        print(colorama.Fore.CYAN + f'Getting screenshot for {get_screenshot}')
+        print(colorama.Fore.CYAN + f' [*] Getting screenshot for {get_screenshot}')
         command = f'gowitness scan file -f {get_screenshot} --threads 50 --screenshot-path {output_file} -q'
         command_output = subprocess.check_output(command, shell=True, stderr=subprocess.DEVNULL).decode()
 

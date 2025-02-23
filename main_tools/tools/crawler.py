@@ -10,6 +10,8 @@ import sys
 
 
 sys.stderr = open(os.devnull, 'w')
+# ...existing code...
+
 class DiscoveryWebCrawler:
     def __init__(self, domain, output_file):
         self.domain = domain
@@ -38,20 +40,16 @@ class DiscoveryWebCrawler:
     def start(self):
         with ThreadPoolExecutor(max_workers=10) as executor:
             executor.map(self.crawl_url, [self.domain])
-
-        if self.output_file:
-            with open(self.output_file, "w") as file:
-                for url in self.urls:
-                    file.write(url + '\n')
-
 def save_results_to_file(output_file, urls):
     with open(output_file, "w") as file:
         for url in urls:
             file.write(url + '\n')
 
+
 def print_results(urls):
     for url in urls:
         print(url)
+
 
 def main():
     parser = argparse.ArgumentParser()

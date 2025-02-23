@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import os
 import sys
 import json
+import whois
 colorama.init()
 
 blue = colorama.Fore.BLUE
@@ -29,12 +30,20 @@ remaine_temp_file       = 'remaine.txt'
 domain_file             = 'domain.txt'
 altdns_temp_file        = 'altdns_temp.txt'
 altdns_resolved_file    = 'altdns_resolved.txt'
+scilla_temp_file        = 'scilla_temp.txt'
+theHarvester_temp_file  = 'theHarvester_temp.txt'
 
 # Crawler_scan variables
 getJS_temp_file         = 'getJS_temp.txt'
 hakrawler_temp_file     = 'hakrawler_temp.txt'
 golinkfinder_temp_file  = 'golinkfinder_temp.txt'
 cariddi_temp_file       = 'cariddi_temp.txt'
+crawler_temp_file       = 'crawler_temp.txt'
+waymac_temp_file        = 'waymac_temp.txt'
+waybackurl_temp_file    = 'waybackurl_temp.txt'
+gau_temp_file           = 'gau_temp.txt'
+katana_temp_file        = 'katana_temp.txt'
+uro_log_file            = 'uro_log.txt'
 
 # Dirsearch_scan variables
 rd1000_temp_file       = 'rd1000_temp.txt'
@@ -46,8 +55,8 @@ dirsearch_temp_file    = 'dirsearch_temp.txt'
 
 
 # Tools
-basic_info_tools = ['dnmasscan', 'whatweb']
-crawler_tools  = ['crawler', 'waymac', 'waybackurl', 'archive', 'gau', 'getjs', 'katana', 'cariddi', 'hakrawler', 'golinkfinder']
+basic_info_tools = ['dnmasscan', 'whatweb', 'google_dork', 'github_dork', 'whois']
+crawler_tools  = ['crawler' , 'waymac', 'waybackurl', 'gau', 'katana', 'getjs', 'hakrawler']
 dirsearch_tools = ['rd1000', 'raft', 'dirm2_3', 'dirsearch']
 param_scan_tools = ['paramspider', 'cleanurls']
 

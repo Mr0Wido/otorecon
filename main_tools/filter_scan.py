@@ -110,7 +110,7 @@ def filter_subs_scan():
             filter_command_sc = f'httpx -l {filter_list} -p {ports_str} -status-code -mc {status_codes_str} -nc -o {filter_temp_file}'
             filter_out = subprocess.Popen(filter_command_sc, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             
-            with tqdm(desc=colorama.Fore.BLUE + "Filtering: ", unit=colorama.Fore.BLUE + " Domains") as pbar:
+            with tqdm(desc=colorama.Fore.BLUE + " [*] Filtering: ", unit=colorama.Fore.BLUE + " Domains") as pbar:
                 result_lines = 0  
                 while True:
                     output = filter_out.stdout.readline()

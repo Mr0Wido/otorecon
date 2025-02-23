@@ -35,17 +35,11 @@ class CustomInstall(install):
         self.run_command("python3 -m pip config set global.break-system-packages true")
         
         # Git ile kurulan bağımlılıklar
-        self.run_command("git clone https://github.com/aboul3la/Sublist3r.git && cd Sublist3r && pip install -r requirements.txt")
-        self.run_command("rm -rf Sublist3r")  
         self.run_command("git clone https://github.com/laramies/theHarvester.git && cd theHarvester && pip install -r requirements/base.txt")
-        self.run_command("sudo mv theHarvester/ /opt/theHarvester && sudo chmod +x /opt/theHarvester/theHarvester.py && sudo ln -sf /opt/theHarvester/theHarvester.py /usr/bin/theHarvester")
+        self.run_command("sudo mv theHarvester/ /opt/theHarvester && sudo chmod +x /opt/theHarvester/theHarvester.py && sudo ln -sf /opt/theHarvester/theHarvester.py /usr/local/bin/theHarvester")
         self.run_command("rm -rf theHarvester")
         self.run_command("git clone https://github.com/blechschmidt/massdns.git && cd massdns && make && sudo make install")
         self.run_command("rm -rf massdns")
-
-        # pip ile kurulan bağımlılıklar
-        self.run_command("pip3 install py-altdns")
-        self.run_command("pip3 install dnsgen")
 
         # Go tabanlı araçlar
         go_tools = {
@@ -53,14 +47,16 @@ class CustomInstall(install):
             "httpx": "github.com/projectdiscovery/httpx/cmd/httpx@latest",
             "katana": "github.com/projectdiscovery/katana/cmd/katana@latest",
             "hakrawler": "github.com/hakluke/hakrawler@latest",
-            "golinkfinder": "github.com/0xsha/GoLinkFinder@latest",
             "getJS": "github.com/003random/getJS@latest",
             "waybackurls": "github.com/tomnomnom/waybackurls@latest",
             "gau": "github.com/lc/gau/v2/cmd/gau@latest",
-            "cariddi": "github.com/edoardottt/cariddi/cmd/cariddi@latest",
             "shuffledns": "github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest",
             "subfinder": "github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest",
-            "gowitness": "github.com/sensepost/gowitness@latest"
+            "gowitness": "github.com/sensepost/gowitness@latest",
+            "dnsx": "github.com/projectdiscovery/dnsx/cmd/dnsx@latest",
+            "cero": "github.com/glebarez/cero@latest",
+            "scilla": "github.com/edoardottt/scilla/cmd/scilla@latest",
+            "uro": "github.com/s0md3v/uro@latest"
             }
 
         for tool, repo in go_tools.items():
@@ -94,7 +90,13 @@ setup(
         "tldextract",
         "beautifulsoup4",
         "dnspython",
-        "Click",
+        "click",
+        "py-altdns",
+        "dnsgen",
+        "sublist3r",
+        "subbrute",
+        "yagooglesearch==1.10.0",
+        "python-whois",
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
