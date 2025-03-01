@@ -1,48 +1,101 @@
 body {
-    background-color: #333; 
-    color: #fff; 
-    font-family: Arial, sans-serif; 
-    margin: 0; 
-    padding: 0; 
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
 }
-.top-bar {
-    background-color: #222; 
-    padding: 10px;
+
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    position: fixed;
+    height: 100%;
+    padding-top: 20px;
+}
+
+.sidebar h2 {
     text-align: center;
+    margin-bottom: 30px;
 }
-.code-block {
-    background-color: #444; 
-    color: #fff; 
-    padding: 20px; 
-    margin: 20px; 
-    max-height: 500px;
-    max-width: 100%;
-    overflow-y: auto;
-    border-radius: 14px;
+
+.sidebar .tablinks {
+    display: block;
+    background-color: #34495e;
+    color: #ecf0f1;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    margin: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
-.title {
-    max-width: 90%;
-    max-height: 800px;
-    margin-top: 50px;
-    margin-left: 30px;
+
+.sidebar .tablinks:hover {
+    background-color: #1abc9c;
 }
+
+.sidebar .tablinks.active {
+    background-color: #1abc9c;
+}
+
+.content {
+    margin-left: 270px;
+    padding: 20px;
+}
+
+.tabcontent {
+    display: none;
+    animation: fadeEffect 1s;
+}
+
+.tabcontent h2 {
+    color: #2c3e50;
+}
+
+.result-list {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 pre {
-    overflow-y: auto;
-    margin-left: 30px;
+    background-color: #34495e;
+    color: #ecf0f1;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
 }
-a {
-    
-    color: #209bb1;
-    text-decoration: none;
+
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
-a:hover {
-    color:  #d84f4f;
-    text-decoration: none;
+
+/* body {
+    display: flex;
 }
-p {
-    text-align: left;
-    font-size: 25px;
-    margin-left: 20px;
-    color: #209bb1;
-    text-decoration: underline;
+.sidebar {
+    width: 250px;
+    background: #f0f0f0;
+    padding: 10px;
 }
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
+.tabcontent {
+    display: none;
+}
+.tablinks {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 5px;
+} */

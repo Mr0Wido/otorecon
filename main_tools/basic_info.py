@@ -63,6 +63,7 @@ def basic_info_scan():
                         file.write(f"{line}\n")
 
                 subprocess.run(['rm', '-f', 'masscan.log'], check=True)
+                subprocess.run(['rm', '-f', domain_temp], check=True)
 
             elif tool == 'whatweb':
                 output = subprocess.check_output(['whatweb', '-v', '--colour=NEVER', '-q', '--no-errors', '-a 3' , f"https://{domain_name}"]).decode()

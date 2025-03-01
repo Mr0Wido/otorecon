@@ -9,7 +9,6 @@ def parser_arguments():
     parser.add_argument('-clr','--clear_protocol_status_code', help='Clear protocols and status codes', action='store_true', required=False)    
     return parser.parse_args()
 
-
 def create_directory_from_url(filter_list):
     if '/' in filter_list:
         apart = filter_list.split('/')
@@ -53,10 +52,10 @@ def filter_subs_scan():
 
     if filter_list and status_codes is None and ports is None:
         try:
-            filter_command_sc = f'httpx -l {filter_list} -p 443,8443,8080,80 -status-code -nc -o {filter_temp_file}'
+            filter_command_sc = f'httpx -l {filter_list} -title -sc -location -p 80,443,8000,8080,8443 -td -cl -probe -nc -o {filter_temp_file}'
             filter_out = subprocess.Popen(filter_command_sc, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             
-            with tqdm(desc=colorama.Fore.BLUE + "Filtering: ", unit=colorama.Fore.BLUE + " Domains") as pbar:
+            with tqdm(desc=colorama.Fore.BLUE + " [*] Filtering: ", unit=colorama.Fore.BLUE + " Domains") as pbar:
                 result_lines = 0  
                 while True:
                     output = filter_out.stdout.readline()
@@ -71,10 +70,10 @@ def filter_subs_scan():
     
     elif filter_list and ports and status_codes is None:
         try:
-            filter_command_sc = f'httpx -l {filter_list} -p {ports_str} -status-code -nc -o {filter_temp_file}'
+            filter_command_sc = f'httpx -l {filter_list} -title -sc -location -p {ports_str} -td -cl -probe -nc -o {filter_temp_file}'
             filter_out = subprocess.Popen(filter_command_sc, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             
-            with tqdm(desc=colorama.Fore.BLUE + "Filtering: ", unit=colorama.Fore.BLUE + " Domains") as pbar:
+            with tqdm(desc=colorama.Fore.BLUE + " [*] Filtering: ", unit=colorama.Fore.BLUE + " Domains") as pbar:
                 result_lines = 0  
                 while True:
                     output = filter_out.stdout.readline()
@@ -89,10 +88,10 @@ def filter_subs_scan():
 
     elif filter_list and status_codes and ports is None:
         try:
-            filter_command_sc = f'httpx -l {filter_list} -status-code -mc {status_codes_str} -nc -o {filter_temp_file}'
+            filter_command_sc = f'httpx -l {filter_list} -title -sc -location -mc {status_codes_str} -td -cl -probe -nc -o {filter_temp_file}'
             filter_out = subprocess.Popen(filter_command_sc, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             
-            with tqdm(desc=colorama.Fore.BLUE + "Filtering: ", unit=colorama.Fore.BLUE + " Domains") as pbar:
+            with tqdm(desc=colorama.Fore.BLUE + " [*] Filtering: ", unit=colorama.Fore.BLUE + " Domains") as pbar:
                 result_lines = 0  
                 while True:
                     output = filter_out.stdout.readline()
@@ -107,7 +106,7 @@ def filter_subs_scan():
 
     elif filter_list and status_codes and ports:
         try:
-            filter_command_sc = f'httpx -l {filter_list} -p {ports_str} -status-code -mc {status_codes_str} -nc -o {filter_temp_file}'
+            filter_command_sc = f'httpx -l {filter_list} -title -sc -location -p {ports_str} -mc {status_codes_str} -td -cl -probe -nc -o {filter_temp_file}'
             filter_out = subprocess.Popen(filter_command_sc, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             
             with tqdm(desc=colorama.Fore.BLUE + " [*] Filtering: ", unit=colorama.Fore.BLUE + " Domains") as pbar:
@@ -124,7 +123,7 @@ def filter_subs_scan():
             print(colorama.Fore.RED + f"Error: {e}")
 
     if args.clear_protocol_status_code:
-        sed_command = f"sed -E 's/^https:\\/\\///; s/^http:\\/\\///; s/\\[.*\\]//g; s/:[0-9]+//g; s/[[:space:]]*$//' {filter_temp_file} | sort -u"
+        sed_command = f"cat {filter_temp_file} | grep -v \"FAILED\" | awk '{{print $1}}' | sed 's|https\\?://||'"
         sed_out = subprocess.Popen(sed_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         output, error = sed_out.communicate()
 
@@ -136,7 +135,7 @@ def filter_subs_scan():
         html_output(output_filename, filtered_file, scan_info, output_kind)
 
         subprocess.run(['rm', '-f', filter_temp_file], check=True)
-        print(colorama.Fore.GREEN + f"Filtred: " + blue + directory, f"{result_lines}" + green + " domains are saved in " + blue + f"{filtered_file}")
+        print(colorama.Fore.GREEN + f" [*] Filtred: " + blue + directory, f"{len(filtered_subdomains)}" + green + " domains are saved in " + blue + f"{filtered_file}")
 
     elif not args.clear_protocol_status_code:
         with open(filter_temp_file, 'r') as f:
@@ -148,7 +147,7 @@ def filter_subs_scan():
         html_output(output_filename, filtered_file, scan_info, output_kind)
         
         subprocess.run(['rm', '-f', filter_temp_file], check=True)
-        print(colorama.Fore.GREEN + f"Filtred: " + blue + directory, f"{result_lines}" + green + " domains are saved in " + blue + f"{filtered_file}")
+        print(colorama.Fore.GREEN + f" [*] Filtred: " + blue + directory, f"{result_lines}" + green + " domains are saved in " + blue + f"{filtered_file}")
         
 if __name__ == "__main__":
     filter_subs_scan()

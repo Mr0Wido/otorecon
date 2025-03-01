@@ -22,8 +22,6 @@ dnmasscan_temp_file = 'dnmasscan_temp.txt'
 whatweb_temp_file = 'whatweb_temp.txt'
 
 # Subdomain_scan variables
-amass_temp_file         = 'amass_temp.txt'
-sublist3r_temp_file     = 'sublist3r_temp.txt'
 shuffledns_temp_file    = 'shuffledns_temp.txt'
 dnsgen_temp_file        = 'dnsgen_temp.txt'
 remaine_temp_file       = 'remaine.txt'
@@ -44,6 +42,7 @@ waybackurl_temp_file    = 'waybackurl_temp.txt'
 gau_temp_file           = 'gau_temp.txt'
 katana_temp_file        = 'katana_temp.txt'
 uro_log_file            = 'uro_log.txt'
+urls_out_temp_file      = 'urls_out_temp.txt'
 
 # Dirsearch_scan variables
 rd1000_temp_file       = 'rd1000_temp.txt'

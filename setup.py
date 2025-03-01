@@ -1,7 +1,5 @@
 from setuptools import setup, find_packages
 from setuptools.command.install import install
-import os
-import platform
 import subprocess
 
 class CustomInstall(install):
@@ -10,27 +8,10 @@ class CustomInstall(install):
         self.install_tools()
 
     def install_tools(self):
-        distro = platform.system().lower()
-        package_manager = None
-
-        # Paket yöneticisini belirle
-        if os.path.exists("/etc/debian_version"):  # Debian tabanlı sistemler (Ubuntu, Kali, Mint)
-            package_manager = "sudo apt-get install -y"
-        elif os.path.exists("/etc/fedora-release"):  # Fedora
-            package_manager = "sudo dnf install -y"
-        elif os.path.exists("/etc/arch-release"):  # Arch Linux
-            package_manager = "sudo pacman -S --noconfirm"
-        elif distro == "windows":
-            package_manager = "choco install"
-        else:
-            print("Desteklenmeyen dağıtım!")
-            return
-
         # Genel paketleri kur
-        self.run_command(f"{package_manager} unzip curl git golang whatweb python3-pip wfuzz gobuster masscan nmap")
+        self.run_command("sudo apt-get install -y unzip curl git golang whatweb python3-pip pipx wfuzz gobuster masscan nmap sed")
         self.run_command("python3 -m pip install --upgrade pip setuptools wheel")
         
-
         # pip düzeltme
         self.run_command("python3 -m pip config set global.break-system-packages true")
         
@@ -56,7 +37,7 @@ class CustomInstall(install):
             "dnsx": "github.com/projectdiscovery/dnsx/cmd/dnsx@latest",
             "cero": "github.com/glebarez/cero@latest",
             "scilla": "github.com/edoardottt/scilla/cmd/scilla@latest",
-            "uro": "github.com/s0md3v/uro@latest"
+            "unfurl": "github.com/tomnomnom/unfurl@latest"
             }
 
         for tool, repo in go_tools.items():
@@ -97,6 +78,10 @@ setup(
         "subbrute",
         "yagooglesearch==1.10.0",
         "python-whois",
+        "tldextract",
+        "fake-useragent",
+        "urllib3",
+        "uro"
     ],
     classifiers=[
         'Programming Language :: Python :: 3',

@@ -2,10 +2,12 @@ from main_tools.common_libs import *
 from main_tools.html_output import html_output
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+dirsearch_tools = ['rd1000', 'raft', 'dirm2_3', 'dirsearch']  # Tanımlanmamış değişken
+
 def parser_arguments():
     parser = argparse.ArgumentParser(description='Directory Search')
     parser.add_argument('-d', '--domain_name', help='Domain name to scan', action='store', default=None, required=False)    
-    parser.add_argument('-ds', '--dirsearch_scan', help='Directory Search', nargs='*', choices = ['rd1000', 'raft', 'dirm2_3', 'dirsearch', 'all'], default=None)
+    parser.add_argument('-ds', '--dirsearch_scan', help='Directory Search', nargs='*', choices=dirsearch_tools + ['all'], default=None)
     parser.add_argument('-dl', '--dirsearch_list', help='Subdomain list for the directory scan', default=None, required=False)
     return parser.parse_args()  
 
@@ -13,7 +15,6 @@ def write_to_file(filename, data):
     with open(filename, 'w') as file:
         file.write('\n'.join(data))
     
-
 def create_directory_from_url(dirsearch_list, domain_name):
     if dirsearch_list and '/' in dirsearch_list:
         apart = dirsearch_list.split('/')
@@ -33,75 +34,62 @@ def create_directory_from_url(dirsearch_list, domain_name):
     else:
         return None
 
-def run_gobuster(tool, dirsearch_list, dirsearch_domain, dirsearch_temp, dirsearch_temp_out):
-        try:
-            with open (f'{tool}_temp.txt', 'w') as f:
-                pass
+def run_gobuster(tool, dirsearch_list, dirsearch_domain, directories_output_file):
+    try:
+        if dirsearch_list:
+            dir_filter_temp_file = 'dir_filter_temp_file.txt'
+            probed_domains_file = 'probed_domains_file.txt'
+            filter_command = f"httpx -l {dirsearch_list} -title -sc -location -p 80,443,8000,8080,8443 -td -cl -probe -nc -o {dir_filter_temp_file}"
+            filter_out = subprocess.Popen(filter_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            output, error = filter_out.communicate()
             
-            if dirsearch_list:
-                with open(dirsearch_list, 'r') as f:
-                    subdomains = set(f.read().splitlines())
-
-                for subdomain in subdomains:
-                    command = f'gobuster dir -u https://{subdomain} -w main_tools/wordlists/dirsearch_wordlists/{tool}.txt --no-color --no-error -o {tool}_temp.txt'
-                    command_out = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                    output, error = command_out.communicate()
-
-                    with open(f'{tool}_temp.txt', 'r') as f:
-                        temp_result = f.readlines()
-
-                    with open(f'{tool}.txt', 'w') as f:
-                        for line in temp_result:
-                            f.write(f'{subdomain}: {line}')
-                    
-                    with open(f'{tool}.txt', 'r') as f:
-                        temp_out = sorted(f.read().splitlines())
-                    
-                    dirsearch_temp_out.update(temp_out)
-
-            elif dirsearch_domain:
-                command = f'gobuster dir -u https://{dirsearch_domain} -w main_tools/wordlists/dirsearch_wordlists/{tool}.txt --no-color --no-error -o {tool}_temp.txt'
-                command_out = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                output, error = command_out.communicate()
-
-                with open(f'{tool}_temp.txt', 'r') as f:
-                    temp_result = f.readlines()
-
-                with open(f'{tool}.txt', 'w') as f:
-                    for line in temp_result:
-                        f.write(f'{dirsearch_domain}: {line}')
-
-                with open (f'{tool}.txt', 'r') as f:
-                    temp_out = f.read().splitlines()
-
-                dirsearch_temp_out.update(temp_out)
+            sed_command = f"cat {dir_filter_temp_file} | grep -v \"FAILED\" | awk '{{print $1}}' >> {probed_domains_file}"
+            sed_out = subprocess.Popen(sed_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            output, error = sed_out.communicate()
             
-            dirsearch_temp.update(dirsearch_temp_out)
-            write_to_file(f'{tool}.txt', dirsearch_temp_out)
-            subprocess.run(['rm', '-f', f'{tool}_temp.txt'], check=True)
-            
-        except subprocess.CalledProcessError as e:
-            print(colorama.Fore.RED + f"{tool} returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")
-            return
+            dirsearch_command = f"xargs -a {probed_domains_file} -I@ sh -c 'gobuster dir -u \"@\" --no-color -f -q -k -e --no-error -w main_tools/wordlists/dirsearch_wordlists/{tool}.txt' | sed 's/\x1B\[[0-9;]*[mK]//g' | tee -a {directories_output_file}"
+            dirsearch_out = subprocess.Popen(dirsearch_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            output, error = dirsearch_out.communicate()
+
+            dirsearch= set(output.splitlines())
+            write_to_file(directories_output_file, dirsearch)
+        
+        elif dirsearch_domain:
+            dirsearch_command = f"gobuster dir -u https://{dirsearch_domain} -w main_tools/wordlists/dirsearch_wordlists/{tool}.txt -f -q -k -e --hide-length --no-color --no-error -o {directories_output_file}"
+            dirsearch_out = subprocess.Popen(dirsearch_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            output, error = dirsearch_out.communicate()
+
+            dirsearch= set(output.splitlines())
+            write_to_file(directories_output_file, dirsearch)
+
+        subprocess.run(['rm', '-f', dir_filter_temp_file], check=True)
+        subprocess.run(['rm', '-f', probed_domains_file], check=True)
+        
+    except subprocess.CalledProcessError as e:
+        print(colorama.Fore.RED + f"{tool} returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")
+        return
 
 def dirsearch_scan():
     args = parser_arguments()
     dirsearch_list = args.dirsearch_list
     dirsearch_domain = args.domain_name
-    dirsearch_temp = set()
-    dirsearch_temp_out = set()
-    dirsearch_result = set()
+    dirsearch_scan = args.dirsearch_scan
     output_kind = 'dirsearch_scan'
     directory = create_directory_from_url(dirsearch_list, dirsearch_domain)    
 
-    if dirsearch_list:
-        directories_output_file = dirsearch_list.replace('.txt', '_dirs.txt')
+    if dirsearch_list and '/' in dirsearch_list:
+        apart = dirsearch_list.split('/')
+        output_filename = apart[0]
+        directories_output_file = os.path.join(directory, f'{output_filename}_dirs.txt')
+        scan_info = 'Directory Bruteforce: '
+    elif dirsearch_list and not '/' in dirsearch_list:
         apart = dirsearch_list.split('_')
-        output_filenmae = apart[0]
+        output_filename = apart[0]
+        directories_output_file = os.path.join(directory, f'{output_filename}_dirs.txt')
         scan_info = 'Directory Bruteforce: '
     elif dirsearch_domain:
         directories_output_file = os.path.join(directory, f'{dirsearch_domain}_dirs.txt')
-        output_filenmae = f'{dirsearch_domain}'
+        output_filename = f'{dirsearch_domain}'
         scan_info = 'Directory Bruteforce: '
     else:
         print(colorama.Fore.RED + 'The following arguments are required: --dl/--dirsearch_list')
@@ -113,31 +101,24 @@ def dirsearch_scan():
         pass
 
     if dirsearch_list:
-        print(colorama.Fore.CYAN + f" [*] Running tools on " + green + f"{dirsearch_list}" )
+        print(colorama.Fore.CYAN + f" [*] Gobuster running on " + colorama.Fore.GREEN + f"{dirsearch_list}" )
     elif dirsearch_domain:
-        print(colorama.Fore.CYAN + f" [*] Running tools on " + green + f"{dirsearch_domain}" )
+        print(colorama.Fore.CYAN + f" [*] Gobuster running on " + colorama.Fore.GREEN + f"{dirsearch_domain}" )
         
-    max_threads = min(10, len(dirsearch_list))
+    max_threads = min(10, len(dirsearch_tools))
     with ThreadPoolExecutor(max_workers=max_threads) as executor:
         futures = []
         for tool in dirsearch_tools:
             if tool not in args.dirsearch_scan and 'all' not in args.dirsearch_scan:
                 continue
-            futures.append(executor.submit(run_gobuster, tool, dirsearch_list, dirsearch_domain, dirsearch_temp, dirsearch_temp_out))
+            futures.append(executor.submit(run_gobuster, tool, dirsearch_list, dirsearch_domain, directories_output_file))
 
         for future in as_completed(futures):
             future.result()
+    
 
-    dirsearch_result.update(dirsearch_temp)        
-    with open(directories_output_file, 'w') as f:
-        f.write('\n'.join(dirsearch_result))
+    print(colorama.Fore.GREEN + f" [*] Directory Search completed. Successfully printed to the " + colorama.Fore.BLUE + f"{directories_output_file}" + colorama.Fore.GREEN + " has been created.")
+    html_output(output_filename, directories_output_file, scan_info, output_kind)
 
-    for tool in dirsearch_tools:
-        file_to_remove = f'{tool}.txt'
-        if os.path.exists(file_to_remove):
-            os.remove(file_to_remove)
-
-    print(colorama.Fore.GREEN + f" [*] Directory Search completed. Successfully printed to the " + blue + f"{directories_output_file}" + green + " has been created")
-    html_output(output_filenmae, directories_output_file, scan_info, output_kind)
 if __name__ == "__main__":
     dirsearch_scan()

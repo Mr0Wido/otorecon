@@ -9,6 +9,14 @@ import sys
 import json
 colorama.init()
 
+blue = colorama.Fore.BLUE
+red = colorama.Fore.RED
+green = colorama.Fore.GREEN
+yellow = colorama.Fore.YELLOW
+magenta = colorama.Fore.MAGENTA
+cyan = colorama.Fore.CYAN
+reset = colorama.Fore.RESET
+
 from main_tools.subdomain_scan import subdomain_scan
 from main_tools.crawler_scan import crawler_scan
 from main_tools.dirsearch_scan import dirsearch_scan
@@ -34,7 +42,19 @@ def parser_arguments():
     parser.add_argument('-gsc', '--get_screenshot', help='URL file for gowitness', action='store', default=None)
     return parser.parse_args()
 
+def banner():
+    print(f"""{red}
+
+ ██████╗ ████████╗ ██████╗ ██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗
+██╔═══██╗╚══██╔══╝██╔═══██╗██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║
+██║   ██║   ██║   ██║   ██║██████╔╝█████╗  ██║     ██║   ██║██╔██╗ ██║
+██║   ██║   ██║   ██║   ██║██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╗██║
+╚██████╔╝   ██║   ╚██████╔╝██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚████║
+ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝
+{reset}""")
+    print(f"{green}Coded By Furkan Deniz - @MR0Wido \n \n{reset}")
 def main():
+    banner()
     args = parser_arguments()
     if args.subdomain_scan:
         subdomain_scan()

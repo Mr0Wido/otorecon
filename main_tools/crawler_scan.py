@@ -36,7 +36,8 @@ def create_directory_from_url(crawler_list, crawler_domain):
     else:
         return None
 
-def run_tool(tool, crawler_list, crawler_domain, urls_output_temp_file, perform_crawler_scan, urls_output_file_js):
+def run_tool(tool, crawler_list, crawler_domain, urls_out_temp_file, perform_crawler_scan, urls_output_file_js, urls_output_file):
+
     try:
         if  tool == 'crawler':
             if crawler_list:
@@ -49,26 +50,37 @@ def run_tool(tool, crawler_list, crawler_domain, urls_output_temp_file, perform_
                 crawler_out = subprocess.Popen(crawler_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                 output = crawler_out.communicate()
             
-            uro_command = f"cat {crawler_temp_file} | uro >> {uro_log_file}"
+            uro_command = f"cat {crawler_temp_file} | uro "
             uro_out = subprocess.Popen(uro_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-            output, error = uro_out.communicate()
-            print (blue + f"{tool}" + green + " completed successfully.")
+            uro_output, error = uro_out.communicate()
+
+            crawler = set(uro_output.splitlines())
+            with open(urls_out_temp_file, 'a') as f:
+                f.write('\n'.join(crawler) + '\n')
+
+            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(crawler)}" + green + " URLs.")
+            subprocess.run(['rm', '-f', crawler_temp_file], check=True)
 
         elif tool == 'waymac':
             if crawler_list:
                 waymac_command = f'python3 main_tools/tools/waybackMachine.py -l {crawler_list} -o {waymac_temp_file}'
-                waymac_out = subprocess.Popen(waymac_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+                waymac_out = subprocess.Popen(waymac_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 output = waymac_out.communicate()
             elif crawler_domain:
                 waymac_command = f'python3 main_tools/tools/waybackMachine.py -d {crawler_domain} -o {waymac_temp_file}'
                 waymac_out = subprocess.Popen(waymac_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                 output = waymac_out.communicate()
             
-            uro_command = f"cat {waymac_temp_file} | uro >> {uro_log_file}"
+            uro_command = f"cat {waymac_temp_file} | uro "
             uro_out = subprocess.Popen(uro_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-            output, error = uro_out.communicate()
-            set(output.splitlines())
-            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully.")
+            uro_output, error = uro_out.communicate()
+            
+            waymac = set(uro_output.splitlines())
+            with open(urls_out_temp_file, 'a') as f:
+                f.write('\n'.join(waymac) + '\n')
+
+            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(waymac)}" + green + " URLs.")
+            subprocess.run(['rm', '-f', waymac_temp_file], check=True)
 
         elif tool == 'waybackurl':
             if crawler_list:        
@@ -80,11 +92,15 @@ def run_tool(tool, crawler_list, crawler_domain, urls_output_temp_file, perform_
                 waybackurl_out = subprocess.Popen(waybackurl_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                 output = waybackurl_out.communicate()
 
-            uro_command = f"cat {waybackurl_temp_file} | uro >> {uro_log_file}"
+            uro_command = f"cat {waybackurl_temp_file} | uro "
             uro_out = subprocess.Popen(uro_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-            output, error = uro_out.communicate()      
-            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully.")
-            
+            uro_output, error = uro_out.communicate()      
+
+            waybackurl = set(uro_output.splitlines())
+            with open(urls_out_temp_file, 'a') as f:
+                f.write('\n'.join(waybackurl) + '\n')
+            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(waybackurl)}" + green + " URLs.")
+            subprocess.run(['rm', '-f', waybackurl_temp_file], check=True)
 
         elif tool == 'gau':
             if crawler_list:
@@ -96,11 +112,16 @@ def run_tool(tool, crawler_list, crawler_domain, urls_output_temp_file, perform_
                 gau_out = subprocess.Popen(gau_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                 output = gau_out.communicate()
 
-            uro_command = f"cat {gau_temp_file} | uro >> {uro_log_file}"
+            uro_command = f"cat {gau_temp_file} | uro "
             uro_out = subprocess.Popen(uro_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-            output, error = uro_out.communicate()  
-            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully.")
-            
+            uro_output, error = uro_out.communicate()  
+
+            gau = set(uro_output.splitlines())
+            with open(urls_out_temp_file, 'a') as f:
+                f.write('\n'.join(gau) + '\n')
+            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(gau)}" + green + " URLs.")
+            subprocess.run(['rm', '-f', gau_temp_file], check=True)
+
         elif tool == 'katana':
             if crawler_list:
                 katana_command = f'katana -list {crawler_list} -nc -silent -o {katana_temp_file}'
@@ -111,10 +132,15 @@ def run_tool(tool, crawler_list, crawler_domain, urls_output_temp_file, perform_
                 katana_out = subprocess.Popen(katana_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                 output = katana_out.communicate()
 
-            uro_command = f"cat {katana_temp_file} | uro >> {uro_log_file}"
+            uro_command = f"cat {katana_temp_file} | uro "
             uro_out = subprocess.Popen(uro_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-            output, error = uro_out.communicate()   
-            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully.")
+            uro_output, error = uro_out.communicate()   
+
+            katana = set(uro_output.splitlines())
+            with open(urls_out_temp_file, 'a') as f:
+                f.write('\n'.join(katana) + '\n')
+            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(katana)}" + green + " URLs.")
+            subprocess.run(['rm', '-f', katana_temp_file], check=True)
 
         elif tool == 'hakrawler':
             if crawler_list:
@@ -126,11 +152,15 @@ def run_tool(tool, crawler_list, crawler_domain, urls_output_temp_file, perform_
                 hakrawler_out = subprocess.Popen(hakrawler_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                 output = hakrawler_out.communicate()
 
-            uro_command = f"cat {hakrawler_temp_file} | uro >> {uro_log_file}"
+            uro_command = f"cat {hakrawler_temp_file} | uro "
             uro_out = subprocess.Popen(uro_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-            output, error = uro_out.communicate()
-            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully.")
+            uro_output, error = uro_out.communicate()
 
+            hakrawler = set(uro_output.splitlines())
+            with open(urls_out_temp_file, 'a') as f:
+                f.write('\n'.join(hakrawler) + '\n')
+            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(hakrawler)}" + green + " URLs.")
+            subprocess.run(['rm', '-f', hakrawler_temp_file], check=True)
             
         elif tool == 'getjs':
             with open(crawler_list, 'r') as file:
@@ -139,7 +169,6 @@ def run_tool(tool, crawler_list, crawler_domain, urls_output_temp_file, perform_
             with open(getJS_temp_file, 'a') as f:
                 for url in urls:
                     getjs_command = f'getjs --url {url}'
-                    print(getjs_command)
                     getjs_out = subprocess.Popen(getjs_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                     output, error = getjs_out.communicate()
                     output_urls = [f"{url}{line.strip()}" for line in output.splitlines() if line.strip()]
@@ -153,22 +182,32 @@ def run_tool(tool, crawler_list, crawler_domain, urls_output_temp_file, perform_
                 out_file.write("\n".join(getjs_urls))
                     
             print(green + "    [+] " + blue + f"{tool}" + green + " completed successfully.")
-        
-        uro_command = f"cat {uro_log_file} | uro >> {urls_output_temp_file}"
+            subprocess.run(['rm', '-f', getJS_temp_file], check=True)
+
+        uro_command = f"cat {urls_out_temp_file} | uro"
         uro_out = subprocess.Popen(uro_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        output, error = uro_out.communicate()
+        uro_output, error = uro_out.communicate()
+
+        urls = set(uro_output.splitlines())
+        with open(urls_output_file, 'w') as f:
+            f.write('\n'.join(urls))
+        
+        subprocess.run(['rm', '-f', urls_out_temp_file], check=True)
 
     except subprocess.CalledProcessError as e:
         print(colorama.Fore.RED + f"{tool} returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")
 
-def extract_js(urls_output_file_js, urls_output_temp_file):
+def extract_js(urls_output_file_js, urls_output_file):
     try:
-        second_sed_command = f"sed -E '/js/!d' {urls_output_temp_file}"
+        second_sed_command = f"sed -E '/js/!d' {urls_output_file}"
         second_sed_command_out = subprocess.Popen(second_sed_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         output, error = second_sed_command_out.communicate()
         withjs_urls = set(output.splitlines())
         with open(urls_output_file_js, 'a') as f:
             f.write('\n'.join(withjs_urls))
+
+        print(magenta + f' [+] Total ' + blue + f"{len(withjs_urls)} "  + magenta + 'Extracted JavaScript URLs Successfully printed to the ' + blue + f'{urls_output_file_js}')
+
     except subprocess.CalledProcessError as e:
         print(colorama.Fore.RED + f"sed returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")
     
@@ -178,11 +217,8 @@ def crawler_scan():
     crawler_list = args.crawler_list
     perform_crawler_scan = args.crawler_scan
     crawler_domain = args.domain_name
-    crawler_temp_out = set()
-    nonjs_urls = set()
-    withjs_urls = set()
     output_kind = 'crawler_scan'
-    urls_output_temp_file = 'urls_temp_output.txt'
+
 
     directory = create_directory_from_url(crawler_list, crawler_domain)
 
@@ -219,13 +255,10 @@ def crawler_scan():
         print(colorama.Fore.RED + 'The following arguments are required: -d/--domain_name')
         sys.exit(1)
 
-    with open(urls_output_temp_file, 'w') as f:
-        pass
-    with open(urls_output_file, 'w') as f:
-        pass
+
     with open(urls_output_file_js, 'w') as f:
         pass
-    with open(uro_log_file, 'w') as f:
+    with open(urls_out_temp_file, 'w') as f:
         pass
 
     if crawler_list:
@@ -237,33 +270,33 @@ def crawler_scan():
     with ThreadPoolExecutor(max_workers=max_threads) as executor:
         futures = []
         for tool in crawler_tools:
+
             if tool not in perform_crawler_scan and 'all' not in args.crawler_scan:
                 continue
-            futures.append(executor.submit(run_tool, tool, crawler_list, crawler_domain, perform_crawler_scan, urls_output_temp_file, urls_output_file_js))
+            futures.append(executor.submit(run_tool, tool, crawler_list, crawler_domain, urls_out_temp_file, perform_crawler_scan, urls_output_file_js, urls_output_file))
 
         for future in as_completed(futures):
             future.result()
 
-    with open(urls_output_temp_file, 'r') as f:
-        crawler_temp_out = set(f.read().splitlines())
+        with open(urls_output_file, 'r') as f:
+            crawler_temp_out = set(f.read().splitlines())
 
-    print( magenta + f" [+] Total " + blue + f"{len(crawler_temp_out)}" + magenta + " URLs found. Successfully printed to the " + blue + f'{urls_output_temp_file}' + magenta + " file.")
+        print( magenta + f" [+] Total " + blue + f"{len(crawler_temp_out)}" + magenta + " URLs found. Successfully printed to the " + blue + f'{urls_output_file}' + magenta + " file.")
     
-    print(colorama.Fore.CYAN + f" [*] Extracting JavaScript Sources from URLs {urls_output_temp_file}")
+
+    print(colorama.Fore.CYAN + f" [*] Extracting JavaScript Sources from URLs {urls_output_file}")
 
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
-        futures.append(executor.submit(extract_js, urls_output_file_js, urls_output_temp_file))
+        futures.append(executor.submit(extract_js, urls_output_file_js, urls_output_file))
 
         for future in as_completed(futures):
             future.result()
-
-    print(magenta + f" [+] Parsed URLs Successfully printed to the " + blue + f'{urls_output_file}' + green + " and " + blue + f'{urls_output_file_js}' + green + " file.")
 
     if args.crawler_param:
         try:
             scan_info_param = 'Sending URLs to paramspider to get parameters'
-            print(colorama.Fore.CYAN + f" [*] Extracting parameters from {urls_output_file}...")
+            print(colorama.Fore.CYAN + f" [*] Extracting parameters from {urls_output_file}")
             param_command = f'python3 main_tools/tools/clean_urls.py -u {urls_output_file} -o {param_output_file}'
             param_out = subprocess.Popen(param_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             output, error = param_out.communicate()
