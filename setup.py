@@ -4,12 +4,16 @@ import subprocess
 
 class CustomInstall(install):
     def run(self):
-        install.run(self)
-        self.install_tools()
+        try:
+            install.run(self)
+            self.install_tools()
+        except Exception as e:
+            print(f"Error: {e}")
+            return
 
     def install_tools(self):
         # Genel paketleri kur
-        self.run_command("sudo apt-get install -y unzip curl git golang whatweb python3-pip pipx wfuzz gobuster masscan nmap sed")
+        self.run_command("sudo apt-get install -y unzip curl git golang whatweb python3-pip pipx wfuzz gobuster masscan nmap sed dig")
         self.run_command("python3 -m pip install --upgrade pip setuptools wheel")
         
         # pip düzeltme
