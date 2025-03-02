@@ -168,7 +168,7 @@ def run_tool(tool, crawler_list, crawler_domain, urls_out_temp_file, perform_cra
 
             with open(getJS_temp_file, 'a') as f:
                 for url in urls:
-                    getjs_command = f'getjs --url {url}'
+                    getjs_command = f'getJS --url {url}'
                     getjs_out = subprocess.Popen(getjs_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                     output, error = getjs_out.communicate()
                     output_urls = [f"{url}{line.strip()}" for line in output.splitlines() if line.strip()]

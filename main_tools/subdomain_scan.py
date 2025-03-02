@@ -69,8 +69,6 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
                 f.write('=' * len("TheHarvester") + '\n')
                 f.write(f"{theharvester_other}\n")
 
-            print(green + " [*] TheHarvester and DNSX results saved in " + blue + f'{other_file}' + green + " file.")
-
             subprocess.run(['rm', '-f', 'theHarvester_out.json'], check=True)
             subprocess.run(['rm', '-f', 'theHarvester_out.xml'], check=True)
             subprocess.run(['rm', '-f', theHarvester_temp_file], check=True)
@@ -135,8 +133,6 @@ def run_bruteforce_subdomain_tools (tool, domain_name, temp_subdomains, temp_sub
                 f.write('=' * len("DNSX") + '\n')
                 for line in first_dnsx:
                     f.write(f"{line}\n")
-
-            print(green + " [*] DNSX other results saved in " + blue + f'{other_file}' + green + " file.")
 
             second_dnsx_command = f'dnsx -silent -d {domain_file} -w main_tools/wordlists/subdomain_wordlists/list_sub.txt'
             second_dnsx_out = subprocess.Popen(second_dnsx_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -263,7 +259,8 @@ def subdomain_scan():
     for tool in subdomain_tools:
         if tool not in args.subdomain_scan and 'all' not in args.subdomain_scan:
             continue
-        if tool == "theharvester" or tool == "dnsx":
+        if tool == "theharvester" and tool == "dnsx":
+            print(green + " [*] TheHarvester and DNSX other results saved in " + blue + f'{other_file}' + green + " file.")
             html_output(domain_name, other_file, scan_info_other, scan_kind)
 
     all_subdomains.update(temp_subdomains)
