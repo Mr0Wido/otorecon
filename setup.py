@@ -23,13 +23,7 @@ setup(
         "fake-useragent",
         "urllib3",
         "uro",
-        "whois"
     ],
-    entry_points={
-        "console_scripts": [
-            "otorecon=main_tools.main:main"
-        ]
-    },
     author='Mr0Wido',
     author_email='furkn.dniz@protonmail.com',
     url='https://github.com/Mr0Wido/otorecon',
@@ -39,5 +33,6 @@ setup(
         "Programming Language :: Python :: 3",
         "Operating System :: POSIX :: Linux",
     ],
+    
 )
 
