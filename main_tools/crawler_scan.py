@@ -266,8 +266,7 @@ def crawler_scan():
     elif crawler_domain:
         print(colorama.Fore.CYAN + f" [*] Running tools on " + green + f"{crawler_domain}.....")
 
-    max_threads = min(10, len(crawler_tools))
-    with ThreadPoolExecutor(max_workers=max_threads) as executor:
+    with ThreadPoolExecutor(max_workers=2) as executor:
         futures = []
         for tool in crawler_tools:
 
@@ -286,7 +285,7 @@ def crawler_scan():
 
     print(colorama.Fore.CYAN + f" [*] Extracting JavaScript Sources from URLs {urls_output_file}")
 
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=2) as executor:
         futures = []
         futures.append(executor.submit(extract_js, urls_output_file_js, urls_output_file))
 

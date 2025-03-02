@@ -232,8 +232,7 @@ def subdomain_scan():
 
     print(colorama.Fore.CYAN + f" [*] Running tools on " + green + f"{domain_name}" )
     
-    max_threads = min(5, len(subdomain_tools))
-    with ThreadPoolExecutor(max_workers=max_threads) as executor:
+    with ThreadPoolExecutor(max_workers=2) as executor:
         futures = []
 
         for tool in subdomain_tools:
@@ -244,8 +243,7 @@ def subdomain_scan():
         for future in as_completed(futures):
             future.result()
 
-    max_threads = min(5, len(subdomain_tools))
-    with ThreadPoolExecutor(max_workers=max_threads) as executor:
+    with ThreadPoolExecutor(max_workers=2) as executor:
         futures = []
 
         for tool in subdomain_tools:
