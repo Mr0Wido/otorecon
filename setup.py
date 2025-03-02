@@ -22,7 +22,8 @@ setup(
         "python-whois",
         "fake-useragent",
         "urllib3",
-        "uro"
+        "uro",
+        "whois"
     ],
     entry_points={
         "console_scripts": [

@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 echo " [*] Installing system dependencies..."
 sudo apt-get update
