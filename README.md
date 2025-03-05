@@ -39,8 +39,6 @@ Otorecon is a Python-based tool for __Reconnaissance__. It provides a variety of
 
 ## Installation
 
-![setup](img/setup.gif)
-
 If you are using a virtual environment, run these commands:
 
 ```bash
@@ -63,12 +61,10 @@ $ ./install.sh
 
 ## [Usage](https://github.com/Mr0Wido/otorecon/wiki/Usage)
 Click the title and learn how to use __otorecon__.
-![basic](img/basic.gif)
-![subs](img/sub.gif)
-![filter](img/filter.gif)
-![dirsearch](img/dir.gif)
 ![crawler](img/crawler.gif)
-![html](img/html.png)
+
+## Html Output
+![html](img/htmlout.png)
 
 
 
