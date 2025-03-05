@@ -15,7 +15,8 @@ def parser_arguments():
 def write_to_file(filename, data):
     with open(filename, 'w') as file:
         file.write('\n'.join(data))
-    
+
+#! Create directories  
 def create_directory_from_url(domain_name):
     directory_name = domain_name
 
@@ -26,7 +27,7 @@ def create_directory_from_url(domain_name):
 
 def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_out, out_of_scope_file, other_file):
     try:    
-        #Subfinder
+        ## Subfinder
         if tool =="subfinder":
             output = subprocess.check_output([tool, '-d', domain_name, '-silent']).decode()
             subfinder = set(output.splitlines())
@@ -34,21 +35,21 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
             print(green + f"    [+] {tool} found " + blue + str(len(subfinder)) + green + " subdomains.")
 
 
-        #Assetfinder
+        ## Assetfinder
         elif tool == "assetfinder": 
             output = subprocess.check_output([tool, '-subs-only', domain_name], stderr=subprocess.DEVNULL).decode()
             assetfinder = set(output.splitlines())
             temp_subdomains.update(assetfinder)
             print(green + f"    [+] {tool} found " + blue + str(len(assetfinder)) + green + " subdomains.")
         
-        #Findomain
+        ## Findomain
         elif tool == "findomain":
             output = subprocess.check_output([tool, '-t', domain_name, '-q']).decode()
             findomain = set(output.splitlines())
             temp_subdomains.update(findomain)
             print(green + f"    [+] {tool} found " + blue + str(len(findomain)) + green + " subdomains.")
         
-        #TheHarvester
+        ## TheHarvester
         elif tool =="theharvester":
             theharvester_other = set()
             theharvester = set()
@@ -74,7 +75,7 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
             subprocess.run(['rm', '-f', theHarvester_temp_file], check=True)
             print(green + f"    [+] {tool} found " + blue + str(len(theharvester)) + green + " subdomains.")
         
-        #Crt.sh
+        ## Crt.sh
         elif tool =="crtsh":
             crtsh_command = f'python3 main_tools/tools/crtsh.py -d {domain_name}'
             crtsh_out = subprocess.Popen(crtsh_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -84,7 +85,7 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
             temp_subdomains.update(crtsh)
             print(green + f"    [+] {tool} found " + blue + str(len(crtsh)) + green + " subdomains.")
         
-        #Cero
+        ## Cero
         elif tool == "cero":
             cero_command = f'cero {domain_name}'
             cero_out = subprocess.Popen(cero_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -94,7 +95,7 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
             temp_subdomains.update(cero)
             print(green + f"    [+] {tool} found " + blue + str(len(cero)) + green + " subdomains.")
 
-        #Scilla
+        ## Scilla
         elif tool == "scilla":
             scilla_command = f'scilla subdomain -target {domain_name} -ot {scilla_temp_file}'
             scilla_out = subprocess.Popen(scilla_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -106,6 +107,7 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
             subprocess.run(['rm', '-f', f'{scilla_temp_file}'], check=True)
             print(green + f"    [+] {tool} found " + blue + str(len(scilla)) + green + " subdomains.")
         
+        ## Gau
         elif tool == "gau":
             gau_command = f'gau --subs {domain_name} | unfurl -u domains'
             gau_out = subprocess.Popen(gau_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -121,7 +123,7 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
 
 def run_bruteforce_subdomain_tools (tool, domain_name, temp_subdomains, temp_subs_out, out_of_scope_file, other_file):
     try:
-        #Dnsx
+        ## Dnsx
         if tool == "dnsx":
             first_dnsx_command = f'cat {domain_file} | dnsx -recon -silent -nc'
             first_dnsx_out = subprocess.Popen(first_dnsx_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -142,7 +144,7 @@ def run_bruteforce_subdomain_tools (tool, domain_name, temp_subdomains, temp_sub
             temp_subdomains.update(second_dnsx)
             print(green + f"    [+] {tool} found " + blue + str(len(second_dnsx)) + green + " subdomains.")
             
-        #shuffledns
+        ## shuffledns
         elif tool == "shuffledns":
             puredns_command = f'shuffledns -d {domain_name} -w main_tools/wordlists/subdomain_wordlists/all.txt -r main_tools/wordlists/subdomain_wordlists/resolvers.txt -t 4000 -mode bruteforce -silent -o {shuffledns_temp_file}'
             puredns_out = subprocess.Popen(puredns_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -154,7 +156,7 @@ def run_bruteforce_subdomain_tools (tool, domain_name, temp_subdomains, temp_sub
             subprocess.run(['rm', '-f', f'{shuffledns_temp_file}'], check=True)
             print(green + f"    [+] {tool} found " + blue + str(len(shuffledns)) + green + " subdomains.")
 
-        #dnsgen
+        ## dnsgen
         elif tool == "dnsgen": 
             with open(dnsgen_temp_file, 'w') as f:
                 pass
@@ -171,7 +173,7 @@ def run_bruteforce_subdomain_tools (tool, domain_name, temp_subdomains, temp_sub
             subprocess.run(['rm', '-f', f'{dnsgen_temp_file}'], check=True)
             print(green + f"    [+] {tool} found " + blue + str(len(dnsgen)) + green + " subdomains.")
         
-        #Altdns
+        ## Altdns
         elif tool == "altdns":
             with open(altdns_temp_file, 'w') as f:
                 pass
@@ -194,10 +196,10 @@ def run_bruteforce_subdomain_tools (tool, domain_name, temp_subdomains, temp_sub
         print(colorama.Fore.RED + f"{tool} returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")
 
 def subdomain_scan():
-    #Tools
+    #! Tools
     subdomain_tools = ['subfinder', 'assetfinder', 'findomain', 'theharvester', 'crtsh', 'shuffledns', 'dnsgen', 'altdns','gau', 'cero', 'scilla', 'dnsx']
 
-    #Variables
+    #! Variables
     args = parser_arguments()
     domain_name = args.domain_name
     out_of_scope_file = args.out_of_scope
@@ -224,6 +226,7 @@ def subdomain_scan():
         write_to_file(domain_file, domain_name.splitlines())
         
     
+    #! Create files
     with open(output_file, 'w') as f:
         pass
     with open(other_file, 'w') as f:
@@ -232,7 +235,9 @@ def subdomain_scan():
 
     print(colorama.Fore.CYAN + f" [*] Running tools on " + green + f"{domain_name}" )
     
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    #! PASSIVE SUBDOMAIN SCAN
+    max_threads = (min(4, len(subdomain_tools)))
+    with ThreadPoolExecutor(max_workers=max_threads) as executor:
         futures = []
 
         for tool in subdomain_tools:
@@ -243,7 +248,9 @@ def subdomain_scan():
         for future in as_completed(futures):
             future.result()
 
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    #! BRUTEFORCE SUBDOMAIN SCAN
+    max_threads = (min(4, len(subdomain_tools)))
+    with ThreadPoolExecutor(max_workers=max_threads) as executor:
         futures = []
 
         for tool in subdomain_tools:
@@ -254,13 +261,21 @@ def subdomain_scan():
         for future in as_completed(futures):
             future.result()
     
+    #! Printıng Other Information Results
     for tool in subdomain_tools:
         if tool not in args.subdomain_scan and 'all' not in args.subdomain_scan:
             continue
+        if tool == "theharvester":
+            print(green + " [*] TheHarvester other results saved in " + blue + f'{other_file}' + green + " file.")
+            html_output(domain_name, other_file, scan_info_other, scan_kind)
+        if tool == "dnsx":
+            print(green + " [*] DNSX other results saved in " + blue + f'{other_file}' + green + " file.")
+            html_output(domain_name, other_file, scan_info_other, scan_kind)
         if tool == "theharvester" and tool == "dnsx":
             print(green + " [*] TheHarvester and DNSX other results saved in " + blue + f'{other_file}' + green + " file.")
             html_output(domain_name, other_file, scan_info_other, scan_kind)
 
+    #! Removing Out-Of-Scope Domains and Printing Results
     all_subdomains.update(temp_subdomains)
     if out_of_scope_file:
         all_subdomains.update(temp_subs_out)
@@ -279,6 +294,7 @@ def subdomain_scan():
             f.write('\n' + '\n'.join(all_subdomains))
         
         print(green + " [*] Total " + blue + f"{len(all_subdomains)}" + green + " subdomains found. Successfully printed to the " + blue + f'{output_file}' + green + " file.")
+    
         html_output(domain_name, output_file, scan_info, scan_kind)
         
 

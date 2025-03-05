@@ -13,6 +13,7 @@ body {
     position: fixed;
     height: 100%;
     padding-top: 20px;
+    overflow-y: auto;
 }
 
 .sidebar h2 {

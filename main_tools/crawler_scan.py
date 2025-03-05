@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 def parser_arguments():
     parser = argparse.ArgumentParser(description='Crawler tools')
     parser.add_argument('-d', '--domain_name', help='Domain name to scan', action='store', default=None, required=False)
-    parser.add_argument('-cs', '--crawler_scan', help='Specify crawler tools to run or use "all"', nargs='*', choices = ['crawler' , 'waymac', 'waybackurl', 'gau', 'katana', 'getjs', 'hakrawler', 'all'], default=None)
+    parser.add_argument('-cs', '--crawler_scan', help='Specify crawler tools to run or use "all"', nargs='*', choices = ['crawler', 'waybackurl', 'gau', 'katana', 'getjs', 'hakrawler', 'all'], default=None)
     parser.add_argument('-cl', '--crawler_list', help='Crawler list for the crawler scan', default=None, required=False)
     parser.add_argument('-cp', '--crawler_param', help='Crawler result parameter', action='store_true', required=False)
     return parser.parse_args()
@@ -59,28 +59,7 @@ def run_tool(tool, crawler_list, crawler_domain, urls_out_temp_file, perform_cra
                 f.write('\n'.join(crawler) + '\n')
 
             print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(crawler)}" + green + " URLs.")
-            subprocess.run(['rm', '-f', crawler_temp_file], check=True)
-
-        elif tool == 'waymac':
-            if crawler_list:
-                waymac_command = f'python3 main_tools/tools/waybackMachine.py -l {crawler_list} -o {waymac_temp_file}'
-                waymac_out = subprocess.Popen(waymac_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                output = waymac_out.communicate()
-            elif crawler_domain:
-                waymac_command = f'python3 main_tools/tools/waybackMachine.py -d {crawler_domain} -o {waymac_temp_file}'
-                waymac_out = subprocess.Popen(waymac_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-                output = waymac_out.communicate()
             
-            uro_command = f"cat {waymac_temp_file} | uro "
-            uro_out = subprocess.Popen(uro_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-            uro_output, error = uro_out.communicate()
-            
-            waymac = set(uro_output.splitlines())
-            with open(urls_out_temp_file, 'a') as f:
-                f.write('\n'.join(waymac) + '\n')
-
-            print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(waymac)}" + green + " URLs.")
-            subprocess.run(['rm', '-f', waymac_temp_file], check=True)
 
         elif tool == 'waybackurl':
             if crawler_list:        
@@ -100,7 +79,7 @@ def run_tool(tool, crawler_list, crawler_domain, urls_out_temp_file, perform_cra
             with open(urls_out_temp_file, 'a') as f:
                 f.write('\n'.join(waybackurl) + '\n')
             print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(waybackurl)}" + green + " URLs.")
-            subprocess.run(['rm', '-f', waybackurl_temp_file], check=True)
+
 
         elif tool == 'gau':
             if crawler_list:
@@ -120,7 +99,7 @@ def run_tool(tool, crawler_list, crawler_domain, urls_out_temp_file, perform_cra
             with open(urls_out_temp_file, 'a') as f:
                 f.write('\n'.join(gau) + '\n')
             print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(gau)}" + green + " URLs.")
-            subprocess.run(['rm', '-f', gau_temp_file], check=True)
+            
 
         elif tool == 'katana':
             if crawler_list:
@@ -140,7 +119,7 @@ def run_tool(tool, crawler_list, crawler_domain, urls_out_temp_file, perform_cra
             with open(urls_out_temp_file, 'a') as f:
                 f.write('\n'.join(katana) + '\n')
             print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(katana)}" + green + " URLs.")
-            subprocess.run(['rm', '-f', katana_temp_file], check=True)
+            
 
         elif tool == 'hakrawler':
             if crawler_list:
@@ -160,7 +139,7 @@ def run_tool(tool, crawler_list, crawler_domain, urls_out_temp_file, perform_cra
             with open(urls_out_temp_file, 'a') as f:
                 f.write('\n'.join(hakrawler) + '\n')
             print (green + "    [+] " + blue + f"{tool}" + green + " completed successfully. Found " + blue + f"{len(hakrawler)}" + green + " URLs.")
-            subprocess.run(['rm', '-f', hakrawler_temp_file], check=True)
+            
             
         elif tool == 'getjs':
             with open(crawler_list, 'r') as file:
@@ -182,7 +161,7 @@ def run_tool(tool, crawler_list, crawler_domain, urls_out_temp_file, perform_cra
                 out_file.write("\n".join(getjs_urls))
                     
             print(green + "    [+] " + blue + f"{tool}" + green + " completed successfully.")
-            subprocess.run(['rm', '-f', getJS_temp_file], check=True)
+            
 
         uro_command = f"cat {urls_out_temp_file} | uro"
         uro_out = subprocess.Popen(uro_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -191,8 +170,6 @@ def run_tool(tool, crawler_list, crawler_domain, urls_out_temp_file, perform_cra
         urls = set(uro_output.splitlines())
         with open(urls_output_file, 'w') as f:
             f.write('\n'.join(urls))
-        
-        subprocess.run(['rm', '-f', urls_out_temp_file], check=True)
 
     except subprocess.CalledProcessError as e:
         print(colorama.Fore.RED + f"{tool} returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")
@@ -266,7 +243,8 @@ def crawler_scan():
     elif crawler_domain:
         print(colorama.Fore.CYAN + f" [*] Running tools on " + green + f"{crawler_domain}.....")
 
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    max_threads = (min(4, len(perform_crawler_scan)))
+    with ThreadPoolExecutor(max_workers=max_threads) as executor:
         futures = []
         for tool in crawler_tools:
 
@@ -285,7 +263,7 @@ def crawler_scan():
 
     print(colorama.Fore.CYAN + f" [*] Extracting JavaScript Sources from URLs {urls_output_file}")
 
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
         futures.append(executor.submit(extract_js, urls_output_file_js, urls_output_file))
 
@@ -294,34 +272,27 @@ def crawler_scan():
 
     if args.crawler_param:
         try:
-            scan_info_param = 'Sending URLs to paramspider to get parameters'
+            scan_info_param = 'Extracting Parameters '
             print(colorama.Fore.CYAN + f" [*] Extracting parameters from {urls_output_file}")
             param_command = f'python3 main_tools/tools/clean_urls.py -u {urls_output_file} -o {param_output_file}'
             param_out = subprocess.Popen(param_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             output, error = param_out.communicate()
 
-            print(magenta + f' [+] Extracted parameters Successfully printed to the ' + blue + f'{param_output_file}')
+            print(magenta + f' [+] Extracted parameters successfully printed to the ' + blue + f'{param_output_file}')
             html_output(output_filenmae, param_output_file, scan_info_param, output_kind)
         except subprocess.CalledProcessError as e:
             print(colorama.Fore.RED + f"paramspider returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")
-
-        try:
-            scan_info_endpoints = 'Sending URLs to endpoint_finder to get endpoints and info from .js files'
-            kind = 'endpoint_finder'
-            print(colorama.Fore.CYAN + f" [*] Extracting endpoints from {urls_output_file_js}...")
-            with open(urls_output_file_js, 'r') as f:
-                urls = set(f.read().splitlines())
-                for url in urls:
-                    list_command = f"python3 main_tools/tools/endpoint_finder.py -u {url} -o {endpointjs_output_file}"
-                    list_command_out = subprocess.Popen(list_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                    output, error = list_command_out.communicate()
-                
-            print(magenta + f' [+] Extracted endpoints Successfully printed to the ' + blue + f'{endpointjs_output_file}')
-        except subprocess.CalledProcessError as e:
-            print(colorama.Fore.RED + f"endpoint_finder returned non-zero exit status {e.returncode}. Error message: {e.output.decode()}")
             
-            html_output(output_filenmae, urls_output_file, scan_info, output_kind)
-            html_output(output_filenmae, urls_output_file_js, scan_info_js, output_kind)
-            html_output(output_filenmae, endpointjs_output_file, scan_info_endpoints, kind)
+    html_output(output_filenmae, urls_output_file, scan_info, output_kind)
+    html_output(output_filenmae, urls_output_file_js, scan_info_js, output_kind)
+
+    subprocess.run(['rm', '-f', crawler_temp_file], check=True)
+    subprocess.run(['rm', '-f', waybackurl_temp_file], check=True)
+    subprocess.run(['rm', '-f', gau_temp_file], check=True)
+    subprocess.run(['rm', '-f', katana_temp_file], check=True)
+    subprocess.run(['rm', '-f', hakrawler_temp_file], check=True)
+    subprocess.run(['rm', '-f', getJS_temp_file], check=True)
+    subprocess.run(['rm', '-f', urls_out_temp_file], check=True)
+
 if __name__ == "__main__":
     crawler_scan()

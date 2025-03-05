@@ -1,6 +1,4 @@
 ![otorecon](img/logo.jpeg)
-  
-# OTORECON
 
 <p align="center">
   <b>The Information Gathering Tool for Bug Bounty</b>
@@ -41,6 +39,8 @@ Otorecon is a Python-based tool for __Reconnaissance__. It provides a variety of
 
 ## Installation
 
+![setup](img/setup.gif)
+
 If you are using a virtual environment, run these commands:
 
 ```bash
@@ -63,6 +63,14 @@ $ ./install.sh
 
 ## [Usage](https://github.com/Mr0Wido/otorecon/wiki/Usage)
 Click the title and learn how to use __otorecon__.
+![basic](img/basic.gif)
+![subs](img/sub.gif)
+![filter](img/filter.gif)
+![dirsearch](img/dir.gif)
+![crawler](img/crawler.gif)
+![html](img/html.png)
+
+
 
 ## Otorecon Workflow
-![otorecon_workflow](img/logo.jpeg)
+![otorecon_workflow](img/otorecon.png)

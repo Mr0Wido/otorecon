@@ -23,10 +23,9 @@ def basic_info_scan():
     domain_name = args.domain_name
     basic_scan = args.basic_scan
     domain_temp = 'domain_temp.txt'
-    scan_kind = 'basic_info_scan'
-    scan_info = 'Basic Information Scan'
     directory = create_directory_url(domain_name)
     output_file = os.path.join(directory, f'{domain_name}_info.txt') 
+    output_file_dork = os.path.join(directory, f'{domain_name}_dork.txt')
 
 
     if basic_scan and domain_name is None:
@@ -42,12 +41,18 @@ def basic_info_scan():
     with open(output_file, 'w') as file:
         pass
 
+    with open(output_file_dork, 'w') as file:
+        pass
+
     basic_info_tools = ['dnmasscan', 'whatweb', 'google_dork', 'github_dork', 'whois']
     for tool in basic_info_tools:
         if tool not in args.basic_scan and 'all' not in args.basic_scan:
             continue            
         print( cyan + f" [*] Running {tool} on " + yellow + f"{domain_name}" )
+            
         try:
+            scan_kind = 'basic_info_scan'
+            scan_info = 'Basic Information Scan'
             if tool == 'dnmasscan':
                 dnmasscan_code = f'sudo python3 main_tools/tools/dnmasscan.py {domain_file} {domain_temp}'
                 sub_out = subprocess.Popen(dnmasscan_code, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -75,11 +80,24 @@ def basic_info_scan():
                     for line in whatweb:
                         file.write(f"{line}\n")
             
-            elif tool == 'google_dork':
+            elif tool == 'whois':
+                whois_info = whois.whois(f"{domain_name}")
+                with open(output_file, 'a') as file:
+                    file.write(f"\n //Whois Information \n")
+                    file.write('=' * len("//Whois Information") + '\n')
+                    file.write(f"{whois_info}\n")
+        except Exception as e:
+            print(f"Error: {e}")
+
+        try:
+            scan_kind_dork = 'dork_list'
+            scan_info_dork = 'Dork List'
+
+            if tool == 'google_dork':
                 google_dork = f'python3 main_tools/tools/dork_hunter.py -d {domain_name}'
                 sub_out = subprocess.Popen(google_dork, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                 stdout, stderr = sub_out.communicate()
-                with open(output_file, 'a') as file:
+                with open(output_file_dork, 'a') as file:
                     file.write(f"\n //Google Dork Links \n")
                     file.write('=' * len("//Google Dork Links") + '\n')
                     file.write(stdout)
@@ -88,25 +106,20 @@ def basic_info_scan():
                 github_dork = f'python3 main_tools/tools/github_dork.py {domain_name}'
                 sub_out = subprocess.Popen(github_dork, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
                 stdout, stderr = sub_out.communicate()
-                with open(output_file, 'a') as file:
+                with open(output_file_dork, 'a') as file:
                     file.write(f"\n //Github Dork Links \n")
                     file.write('=' * len("//Github Dork Links") + '\n')
                     file.write(stdout)
-            
-            elif tool == 'whois':
-                whois_info = whois.whois(f"{domain_name}")
-                with open(output_file, 'a') as file:
-                    file.write(f"\n //Whois Information \n")
-                    file.write('=' * len("//Whois Information") + '\n')
-                    file.write(f"{whois_info}\n")
 
         except Exception as e:
-            print(e)
+            print(f"Error: {e}")
+
 
     subprocess.run(['rm', '-f', domain_temp], check=True)
     print(f'{colorama.Fore.GREEN} [*] Basic Information Scan Completed and Results saved in ' + blue + f'{output_file}' + green +  ' file.')
-
     html_output(domain_name, output_file, scan_info, scan_kind)
+    html_output(domain_name, output_file_dork, scan_info_dork, scan_kind_dork)
+
 
 if __name__ == "__main__":
     basic_info_scan()

@@ -10,7 +10,7 @@ def html_output(output_filename, data_file, info, output_kinds):
 
     with open(html_file_path, 'a' if file_exists else 'w') as html_file:
         if not file_exists:
-            # Eğer dosya ilk defa oluşturuluyorsa, temel HTML yapısını yaz
+
             html_file.write(f'''
             <!DOCTYPE html>
             <html lang="en">
@@ -47,17 +47,16 @@ def html_output(output_filename, data_file, info, output_kinds):
                     <div id="scan-results"></div>
             ''')
 
-        # **Benzersiz Tab ID Oluştur**
+        #! Tab ID Oluştur
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         tab_id_base = f"{output_filename}_{timestamp.replace(' ', '_').replace(':', '-')}"
         
-        # Daha önce aynı ID varsa numaralandır
         counter = 1
         while f"{tab_id_base}-{counter}" in open(html_file_path).read():
             counter += 1
         tab_id = f"{tab_id_base}-{counter}"
 
-        # **Yeni Butonu Sidebar'a Ekleyelim**
+        #! Tab Buttons
         html_file.write(f'''
             <script>
                 var btn = document.createElement("button");
@@ -68,27 +67,32 @@ def html_output(output_filename, data_file, info, output_kinds):
             </script>
         ''')
 
-        # **Yeni Tarama Sonucunu İçerik Alanına Ekleyelim**
+        #! Results
         scan_result_html = f'''
             <div id="{tab_id}" class="tabcontent">
                 <h2>{info} - {timestamp}</h2>
                 <div class="result-list">
         '''
 
-        # **Dosyadaki İçeriği HTML'e Yazalım**
+        #! Rusults in HTML
         with open(data_file, 'r') as file:
             if output_kinds == 'crawler_scan':
                 for line in file:
                     scan_result_html += f'<a href="{line.strip()}" target="_blank">{line.strip()}</a><br>'
+            if output_kinds == 'dork_list':
+                for line in file:
+                    if line.startswith(("http", "https")):
+                        scan_result_html += f'<a href="{line.strip()}" target="_blank">{line.strip()}</a><br>'
+                    else:
+                        scan_result_html += f'<p>{line.strip()}<br></p>'
             elif output_kinds == 'get_screenshot':
                 for line in file:
                     scan_result_html += f'<p> (-) {line.strip()}<br><img src="{line.strip()}" width="50%" height="50%"><br></p>'
             else:
                 scan_result_html += f'<pre>{file.read()}</pre>'
 
-        scan_result_html += '</div></div>'  # `tabcontent` kapatıldı
+        scan_result_html += '</div></div>' 
 
-        # **Tarama Sonucunu `scan-results` İçine Ekleyelim**
         html_file.write(f'''
             <script>
                 var resultDiv = document.createElement("div");
@@ -97,7 +101,6 @@ def html_output(output_filename, data_file, info, output_kinds):
             </script>
         ''')
 
-        # Eğer dosya yeni oluşturulduysa, body'yi kapat
         if not file_exists:
             html_file.write('</div></body></html>')
 

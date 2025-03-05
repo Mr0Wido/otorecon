@@ -104,8 +104,8 @@ def dirsearch_scan():
         print(colorama.Fore.CYAN + f" [*] Gobuster running on " + colorama.Fore.GREEN + f"{dirsearch_list}" )
     elif dirsearch_domain:
         print(colorama.Fore.CYAN + f" [*] Gobuster running on " + colorama.Fore.GREEN + f"{dirsearch_domain}" )
-        
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    
+    with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
         for tool in dirsearch_tools:
             if tool not in args.dirsearch_scan and 'all' not in args.dirsearch_scan:

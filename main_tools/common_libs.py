@@ -55,7 +55,7 @@ dirsearch_temp_file    = 'dirsearch_temp.txt'
 
 # Tools
 basic_info_tools = ['dnmasscan', 'whatweb', 'google_dork', 'github_dork', 'whois']
-crawler_tools  = ['crawler' , 'waymac', 'waybackurl', 'gau', 'katana', 'getjs', 'hakrawler']
+crawler_tools  = ['crawler', 'waybackurl', 'gau', 'katana', 'getjs', 'hakrawler']
 dirsearch_tools = ['rd1000', 'raft', 'dirm2_3', 'dirsearch']
 param_scan_tools = ['paramspider', 'cleanurls']
 

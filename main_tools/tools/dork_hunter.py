@@ -65,7 +65,11 @@ def main():
     }
 
     for description, dork in dorks.items():
-        print("\n" + description + "\n")
+        # İlk önce açıklama kısmını yaz
+        print("\n" + description.split('(')[0].strip())  # Bu satır açıklamayı yazacak
+        # Şimdi Google linkini alt satıra yaz
+        print(description.split('(')[1].strip(')'))  # Bu satır linki alt satıra yazacak
+
         if inputs.output:
             save(inputs.output, description)
         try:
