@@ -142,15 +142,24 @@ def run_tool(tool, crawler_list, crawler_domain, urls_out_temp_file, perform_cra
             
             
         elif tool == 'getjs':
-            with open(crawler_list, 'r') as file:
-                urls = [f"https://{line.strip()}" for line in file.readlines() if line.strip()]
+            if crawler_list:
+                with open(crawler_list, 'r') as file:
+                    urls = [f"https://{line.strip()}" for line in file.readlines() if line.strip()]
 
-            with open(getJS_temp_file, 'a') as f:
-                for url in urls:
-                    getjs_command = f'getJS --url {url}'
-                    getjs_out = subprocess.Popen(getjs_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-                    output, error = getjs_out.communicate()
-                    output_urls = [f"{url}{line.strip()}" for line in output.splitlines() if line.strip()]
+                with open(getJS_temp_file, 'a') as f:
+                    for url in urls:
+                        getjs_command = f'getJS --url {url}'
+                        getjs_out = subprocess.Popen(getjs_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+                        output, error = getjs_out.communicate()
+                        output_urls = [f"{url}{line.strip()}" for line in output.splitlines() if line.strip()]
+                        f.write('\n'.join(output_urls) + '\n')
+
+            elif crawler_domain:
+                getjs_command = f'getJS --url {crawler_domain}'
+                getjs_out = subprocess.Popen(getjs_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+                output, error = getjs_out.communicate()
+                output_urls = [f"{crawler_domain}{line.strip()}" for line in output.splitlines() if line.strip()]
+                with open(getJS_temp_file, 'w') as f:
                     f.write('\n'.join(output_urls) + '\n')
 
             
