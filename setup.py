@@ -23,6 +23,7 @@ setup(
         "fake-useragent",
         "urllib3",
         "uro",
+        "google",
     ],
     author='Mr0Wido',
     author_email='furkn.dniz@protonmail.com',
