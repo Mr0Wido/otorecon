@@ -28,15 +28,14 @@ done
 
 echo " [*] Cloning and installing Git-based tools..."
 git clone https://github.com/laramies/theHarvester.git
-cd theHarvester && sudo pip install -r requirements/base.txt
 sudo mv theHarvester /opt/theHarvester
 sudo chmod +x /opt/theHarvester/theHarvester.py
 sudo ln -sf /opt/theHarvester/theHarvester.py /usr/local/bin/theHarvester
-cd .. && rm -rf theHarvester
+rm -rf theHarvester
 
 git clone https://github.com/blechschmidt/massdns.git
 cd massdns && make && sudo make install
-cd .. && rm -rf massdns
+rm -rf massdns
 
 echo " [*] Installing Findomain..."
 curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
