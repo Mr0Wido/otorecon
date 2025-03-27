@@ -142,7 +142,8 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
                     output = subprocess.check_output([tool, '-subs-only', domain], stderr=subprocess.DEVNULL).decode()
                     assetfinder = set(output.splitlines())
                     temp_subdomains.update(assetfinder)
-                    print(green + f"    [+] {tool} found " + blue + str(len(assetfinder)) + green + " subdomains.")
+                    
+                print(green + f"    [+] {tool} found " + blue + str(len(assetfinder)) + green + " subdomains.")
 
             ## Findomain
             elif tool == "findomain":
@@ -178,7 +179,7 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
                     subprocess.run(['rm', '-f', 'theHarvester_out.json'], check=True)
                     subprocess.run(['rm', '-f', 'theHarvester_out.xml'], check=True)
                     subprocess.run(['rm', '-f', theHarvester_temp_file], check=True)
-                    print(green + f"    [+] {tool} found " + blue + str(len(theharvester)) + green + " subdomains.")
+                print(green + f"    [+] {tool} found " + blue + str(len(theharvester)) + green + " subdomains.")
 
             ## Crt.sh
             elif tool =="crtsh":
@@ -191,7 +192,7 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
 
                     crtsh = set(output.splitlines())
                     temp_subdomains.update(crtsh)
-                    print(green + f"    [+] {tool} found " + blue + str(len(crtsh)) + green + " subdomains.")
+                print(green + f"    [+] {tool} found " + blue + str(len(crtsh)) + green + " subdomains.")
             
             ## Cero
             elif tool == "cero":
@@ -204,7 +205,7 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
 
                     cero = set(output.splitlines())
                     temp_subdomains.update(cero)
-                    print(green + f"    [+] {tool} found " + blue + str(len(cero)) + green + " subdomains.")
+                print(green + f"    [+] {tool} found " + blue + str(len(cero)) + green + " subdomains.")
                 
             ## Scilla
             elif tool == "scilla":
@@ -219,7 +220,7 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
                         scilla = set(f.read().splitlines())
                     temp_subdomains.update(scilla)
                     subprocess.run(['rm', '-f', f'{scilla_temp_file}'], check=True)
-                    print(green + f"    [+] {tool} found " + blue + str(len(scilla)) + green + " subdomains.")
+                print(green + f"    [+] {tool} found " + blue + str(len(scilla)) + green + " subdomains.")
 
             ## Gau
                 gau_command = f'cat {domain_list} | gau --subs  | unfurl -u domains'
@@ -426,7 +427,7 @@ def subdomain_scan():
         pass
 
 
-    print(colorama.Fore.CYAN + f" [*] Running tools on " + green + f"{domain_name}" )
+    print(colorama.Fore.CYAN + f" [*] Running tools on " + green + f"{domain_name or domain_file} " )
     
     #! PASSIVE SUBDOMAIN SCAN
     max_threads = (min(4, len(subdomain_tools)))
