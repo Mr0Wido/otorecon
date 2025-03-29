@@ -41,10 +41,16 @@ def filter_subs_scan():
         filtered_file = filter_list.replace('.txt', '_filtered.txt')
         filter_temp_file = filter_list.replace('.txt', '_filter_temp.txt')
     
-    else:
+    elif not '/' in filter_list and '_' in filter_list:
         apart = filter_list.split('_')
         output_filename = apart[0]
         filtered_file = os.path.join(directory, filter_list.replace('.txt', '_filtered.txt'))
+        filter_temp_file = filter_list.replace('.txt', '_filter_temp.txt')
+    
+    else:
+        apart = filter_list.split('.')
+        output_filename = apart[0]
+        filtered_file = filter_list.replace('.txt', '_filtered.txt')
         filter_temp_file = filter_list.replace('.txt', '_filter_temp.txt')
 
     with open(filter_temp_file, 'w') as f:
