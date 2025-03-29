@@ -219,7 +219,8 @@ def run_passive_subdomain_tools(tool, domain_name, temp_subdomains, temp_subs_ou
                     with open(scilla_temp_file, 'r') as f:
                         scilla = set(f.read().splitlines())
                     temp_subdomains.update(scilla)
-                    subprocess.run(['rm', '-f', f'{scilla_temp_file}'], check=True)
+                
+                subprocess.run(['rm', '-f', f'{scilla_temp_file}'], check=True)
                 print(green + f"    [+] {tool} found " + blue + str(len(scilla)) + green + " subdomains.")
 
             ## Gau
