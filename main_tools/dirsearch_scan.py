@@ -77,20 +77,29 @@ def dirsearch_scan():
     output_kind = 'dirsearch_scan'
     directory = create_directory_from_url(dirsearch_list, dirsearch_domain)    
 
-    if dirsearch_list and '/' in dirsearch_list:
-        apart = dirsearch_list.split('/')
-        output_filename = apart[0]
-        directories_output_file = os.path.join(directory, f'{output_filename}_dirs.txt')
-        scan_info = 'Directory Bruteforce: '
-    elif dirsearch_list and not '/' in dirsearch_list:
-        apart = dirsearch_list.split('_')
-        output_filename = apart[0]
-        directories_output_file = os.path.join(directory, f'{output_filename}_dirs.txt')
-        scan_info = 'Directory Bruteforce: '
+    if dirsearch_list:
+        if '/' in dirsearch_list:
+            apart = dirsearch_list.split('/')
+            output_filename = apart[0]
+            directories_output_file = os.path.join(directory, f'{output_filename}_dirs.txt')
+            scan_info = 'Directory Bruteforce: '
+        elif not '/' in dirsearch_list and '_' in dirsearch_list:
+            apart = dirsearch_list.split('_')
+            output_filename = apart[0]
+            directories_output_file = os.path.join(directory, f'{output_filename}_dirs.txt')
+            scan_info = 'Directory Bruteforce: '
+        else:
+            apart = dirsearch_list.split('.')
+            output_filename = apart[0]
+            directories_output_file = f'{output_filename}_dirs.txt'
+            scan_info = 'Directory Bruteforce: '
+        
     elif dirsearch_domain:
-        directories_output_file = os.path.join(directory, f'{dirsearch_domain}_dirs.txt')
-        output_filename = f'{dirsearch_domain}'
-        scan_info = 'Directory Bruteforce: '
+        if dirsearch_domain:
+            directories_output_file = os.path.join(directory, f'{dirsearch_domain}_dirs.txt')
+            output_filename = f'{dirsearch_domain}'
+            scan_info = 'Directory Bruteforce: '
+        
     else:
         print(colorama.Fore.RED + 'The following arguments are required: --dl/--dirsearch_list')
         print(colorama.Fore.RED + 'The following arguments are required: --d/--domain_name')
