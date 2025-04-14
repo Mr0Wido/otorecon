@@ -208,26 +208,35 @@ def crawler_scan():
 
     directory = create_directory_from_url(crawler_list, crawler_domain)
 
-    if crawler_list and '/' in crawler_list:
-        apart = crawler_list.split('/')
-        output_filenmae = apart[0]
-        urls_output_file = os.path.join(directory, f'{output_filenmae}_urls.txt')
-        urls_output_file_js = os.path.join(directory, f'{output_filenmae}_jsurls.txt')
-        param_output_file = urls_output_file.replace('.txt', '_param.txt')
-        endpointjs_output_file = urls_output_file_js.replace('.txt', '_endpoints.txt')
-        scan_info = 'Crawler scan '
-        scan_info_js = 'Crawler scan (only .js files) '
+    if crawler_list:
+        if crawler_list and '/' in crawler_list:
+            apart = crawler_list.split('/')
+            output_filenmae = apart[0]
+            urls_output_file = os.path.join(directory, f'{output_filenmae}_urls.txt')
+            urls_output_file_js = os.path.join(directory, f'{output_filenmae}_jsurls.txt')
+            param_output_file = urls_output_file.replace('.txt', '_param.txt')
+            endpointjs_output_file = urls_output_file_js.replace('.txt', '_endpoints.txt')
+            scan_info = 'Crawler scan '
+            scan_info_js = 'Crawler scan (only .js files) '
     
-    elif crawler_list and not '/' in crawler_list:
-        apart = crawler_list.split('_')
-        output_filenmae = apart[0]
-        urls_output_file = os.path.join(directory, f'{output_filenmae}_urls.txt')
-        urls_output_file_js = os.path.join(directory, f'{output_filenmae}_jsurls.txt')
-        param_output_file = urls_output_file.replace('.txt', '_param.txt')
-        endpointjs_output_file = urls_output_file_js.replace('.txt', '_endpoints.txt')
-        scan_info = 'Crawler Scan '
-        scan_info_js = 'Crawler Scan (only .js files)'
-
+        elif crawler_list and not '/' in crawler_list and '_' in crawler_list:
+            apart = crawler_list.split('_')
+            output_filenmae = apart[0]
+            urls_output_file = os.path.join(directory, f'{output_filenmae}_urls.txt')
+            urls_output_file_js = os.path.join(directory, f'{output_filenmae}_jsurls.txt')
+            param_output_file = urls_output_file.replace('.txt', '_param.txt')
+            endpointjs_output_file = urls_output_file_js.replace('.txt', '_endpoints.txt')
+            scan_info = 'Crawler Scan '
+            scan_info_js = 'Crawler Scan (only .js files)'
+        else:
+            apart = crawler_list.split('.')
+            output_filenmae = apart[0]
+            urls_output_file = f'{output_filenmae}_urls.txt'
+            urls_output_file_js = f'{output_filenmae}_jsurls.txt'
+            param_output_file = urls_output_file.replace('.txt', '_param.txt')
+            endpointjs_output_file = urls_output_file_js.replace('.txt', '_endpoints.txt')
+            scan_info = 'Crawler Scan '
+            scan_info_js = 'Crawler Scan (only .js files)'
     elif crawler_domain:
         urls_output_file_js = os.path.join(directory, f'{crawler_domain}_jsurls.txt')
         urls_output_file = os.path.join(directory, f'{crawler_domain}_urls.txt')
